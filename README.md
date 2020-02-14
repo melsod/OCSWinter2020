@@ -24,7 +24,7 @@ The experiment will be programmed using jsPsych, a JavaScript library for runnin
 
 # Contributors
 
-Melanie Soderstrom, Jackie Spear, Jarod Joshi, Bradley Smith, Barbie Jain, Spenser Martin, Michael Mielniczek, Olivia Cadieux, Carly Cressman, Jolyn Sawatzky, Alanna Beyak, Essence Perera, Derek Trudel, Sara Montazeri, Thomas Thompson
+Melanie Soderstrom, Jackie Spear, Jarod Joshi, Bradley Smith, Barbie Jain, Spenser Martin, Michael Mielniczek, Olivia Cadieux, Carly Cressman, Jolyn Sawatzky, Alanna Beyak, Essence Perera, Derek Trudel, Sara Montazeri, Thomas Thompson, Matthew Cook
 
 # Acknowledgements 
 
