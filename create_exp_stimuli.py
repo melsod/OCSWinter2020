@@ -32,6 +32,6 @@ for i in range(len(organized_baby_list)):
 print_text=print_text+''']'''
 #print(print_text)
 
-f = open("C:\\Users\\brads\\Dropbox\\PSYC7310Open\\experiments\\Babble_Exp\\create_test_stimuli.js","w+")
+f = open("C:\\Users\\brads\\Dropbox\\PSYC7310Open\\experiments\\Babble_Exp\\test_stimuli.js","w+")
 f.write(print_text)
 f.close()

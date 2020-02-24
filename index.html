@@ -6,12 +6,17 @@
       -add debrief
       -idiot proof it
       -full screen mode (and track if it goes out of full screen mode)
-      -add end survey
       -add attention checks
       -save data to server
       -change parameters to experimental ones
       -properly subset the clips
+      -translate python to R code
+
+      COMPLETED:
       -informed consent with letterhead
+      -place experimental text in separate file for easy editing
+      -add end survey
+
 
 -->
 
@@ -82,8 +87,14 @@ src: local('Open Sans Bold'), local('OpenSans-Bold'), format('truetype');
 <script src="jspsych-6-2/jspsych.js"></script>
 <script src="jspsych-6-2/plugins/jspsych-html-keyboard-response.js"></script>
 <script src="jspsych-6-2/plugins/jspsych-html-button-response.js"></script>
-<script src="jspsychr/jspsychr.js"></script>
-<script src='create_test_stimuli.js'></script>
+<script src="jspsych-6-2/plugins/jspsych-external-html.js"></script>
+<script src="jspsych-6-2/plugins/jspsych-survey-text.js"></script>
+<script src="jspsych-6-2/plugins/jspsych-survey-multi-choice.js"></script>
+<script src="jspsych-6-2/plugins/jspsych-survey-html-form.js"></script>
+<!--<script src="jspsychr/jspsychr.js"></script>-->
+<script src='stimuli/test_stimuli.js'></script>
+<script src='stimuli/exp_text.js'></script>
+
 
 
 <script type="text/javascript">
@@ -147,17 +158,23 @@ jsPsych.data.addProperties({
 var reps_per_trial_type = 1;
 var which_clicked = [];
 
+var consent = {
+  type: "external-html",
+  url: "forms/consent.html",
+  cont_btn: "agree-btn",
+  data: {"phase": "Consent"},
+}
+
 var welcome = {
   type: "html-keyboard-response",
-  stimulus: "Welcome to the experiment. This experiment will take no longer than 30 minutes. Press any key to begin.",
+  stimulus: welcome_text,
   data: {"phase": "Welcome",},
 };
 
 
 var instructions = {
   type: "html-keyboard-response",
-  stimulus: "<p>In this experiment, you will be listening to sounds made by babies between the ages of 6-36 months. Your task will be to try and identify characteristics of the baby making those sounds (age, sex, familial language). You will respond by selecting the corresponding button when presented. Please make these judgements based on your initial impressions. You must listen to all audio clips before responding and if there are multiple audio clips they are guaranteed to be from the same child.</p>"+
-  		"<p>Press any key to begin.</p>",
+  stimulus: instruction_text,
   data: {"phase": "Instructions",},
   post_trial_gap: 1000,
 };
@@ -195,24 +212,24 @@ var testing = {
 	timeline: [testing_trial],
 	timeline_variables:[
 		{
-		  choices: ["English","Non-English"],
-		  prompt: "<p>What laguage is spoken in this baby's home?</p>",
+		  choices: language_choices,
+		  prompt: language_prompt,
 		  data:{
 		    "phase": "Language",
 		  },
 
 		},
 		{
-		  choices: ["0-7","8-18","18-36"],
-		  prompt: "<p>How many months old is the baby?</p>",
+		  choices: age_choices,
+		  prompt: age_prompt,
 		  data:{
 		    "phase": "Age",
 		  },
 
 		},
 		{
-		  choices: ["Male","Female"],
-		  prompt: "<p>What is the baby's Sex?</p>",
+		  choices: sex_choices,
+		  prompt: sex_prompt,
 		  data:{
 		    "phase": "Sex",
 		  },
@@ -223,18 +240,83 @@ var testing = {
 	repetitions: 1,
 };
 
+/*
+var survey_childcare = {
+  type: 'survey-text',
+  questions: [
+    {prompt: childcare_text, required: true, name: "Childcare"},// check data collected here
+    {prompt: caregiver_text, required: true, name: "Caregiver"},
+  ],
+	randomize_order: false,
+}
+
+var survey_personal = {
+  type: 'survey-multi-choice',
+  questions:[
+    {prompt: }
+  ]
+}
+*/
+
+/*
+var survey = {
+  timeline: [survey_childcare]
+}
+*/
+
+var survey = {
+  data: {"phase": "Survey"},
+  timeline: [
+    {
+      type: 'survey-text',
+      questions: [
+        {prompt: childcare_text, required: true, name: "Childcare"}, // check data collected here
+        {prompt: caregiver_text, required: true, name: "Caregiver"},
+        {prompt: age_text, required: true, name: "Age"},
+      ],
+    },
+    {
+      type: 'survey-html-form',
+      prompt: gender_prompt,
+      html: "<input type='checkbox' id='Male' name='Male' value='Male'><label for='Male'>Male</label> <input type='checkbox' id='Female' name='Female' value='Female'><label for='Female'>Female</label> <input type='checkbox' id='Other_gender' name='Other_gender' value='Other_gender'><label for='Other'>Other</label> <input type='text', name='other_gender_fill_in'>",
+    },
+    {
+      type: 'survey-html-form',
+      prompt: country_prompt,
+      html: "<input type='checkbox' id='Canada' name='Canada' value='Canada'><label for='Canada'>Canada</label> <input type='checkbox' id='USA' name='USA' value='USA'><label for='USA'>USA</label> <input type='checkbox' id='Other_country' name='Other_country' value='Other_country'><label for='Other'>Other</label> <input type='text', name='other_country_fill_in'>",
+    },
+    {
+      type: 'survey-multi-choice',
+      questions:[
+        {prompt: normal_hearing_prompt, name: 'Normal_hearing', options: normal_hearing_options, required: true, horizontal: true,},
+      ],
+    },
+    {
+      type: 'survey-multi-choice',
+      questions:[
+        {prompt: Engl_first_lang_prompt, name: 'Engl_first_lang', options: Engl_first_lang_opt, required: true, horizontal: true,},
+        {prompt: Know_corp_lang_prompt, name: 'Know_corp_lang', options: Know_corp_lang_opt, required: false, horizontal: true,},
+        {prompt: monolingual_prompt, name: 'monolingual', options: monolingual_opt, required: true, horizontal: true,},
+      ],
+    },
+  ],
+}
+
+
 /*set up debrief block*/
 var debrief = {
   type: "html-keyboard-response",
-  stimulus: "<p>Thanks for participating! Here is the debrief section!</p>",
-  post_trial_gap: 1000
+  stimulus: debrief_text,
+  //post_trial_gap: 1000
 };
 
 /*set up experiment structure*/
 var timeline = [];
+timeline.push(consent);
 timeline.push(welcome);
 timeline.push(instructions);
 timeline.push(testing);
+timeline.push(survey);
 timeline.push(debrief);
 
 /*start experiment*/
