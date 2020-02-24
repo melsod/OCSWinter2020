@@ -1,0 +1,342 @@
+<!-- adapted Crumps recognition memory task: Bradley Smith (BCS) Feb 2020-->
+
+<!-- LIST OF THINGS TO FIX/ADD:
+      -correct answers in test_stimuli
+      -force full audio to play before any other button can be pressed
+      -add debrief
+      -idiot proof it
+      -full screen mode (and track if it goes out of full screen mode)
+      -add end survey
+      -add attention checks
+      -save data to server
+      -change parameters to experimental ones
+      -properly subset the clips
+
+-->
+
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+
+<meta charset="utf-8" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<meta name="author" content="Bradley Smith" />
+
+
+<title>Open Science Experiment</title>
+
+
+
+
+
+
+<style type="text/css">@font-face {
+font-family: 'Open Sans';
+font-style: italic;
+font-weight: 400;
+src: local('Open Sans Italic'), local('OpenSans-Italic'), format('truetype');
+}
+@font-face {
+font-family: 'Open Sans';
+font-style: italic;
+font-weight: 700;
+src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'), format('truetype');
+}
+@font-face {
+font-family: 'Open Sans';
+font-style: normal;
+font-weight: 400;
+src: local('Open Sans Regular'), local('OpenSans-Regular'), format('truetype');
+}
+@font-face {
+font-family: 'Open Sans';
+font-style: normal;
+font-weight: 700;
+src: local('Open Sans Bold'), local('OpenSans-Bold'), format('truetype');
+}
+.jspsych-display-element {display: flex;flex-direction: column;overflow-y: auto;}.jspsych-display-element:focus {outline: none;}.jspsych-content-wrapper {display: flex;margin: auto;flex: 1 1 100%;width: 100%;}.jspsych-content {max-width: 95%; text-align: center;margin: auto; }.jspsych-top {align-items: flex-start;}.jspsych-middle {align-items: center;}.jspsych-display-element {font-family: 'Open Sans', 'Arial', sans-serif;font-size: 18px;line-height: 1.6em;}.jspsych-display-element input[type="text"] {font-family: 'Open Sans', 'Arial', sans-serif;font-size: 14px;}.jspsych-btn {display: inline-block;padding: 6px 12px;margin: 0px;font-size: 14px;font-weight: 400;font-family: 'Open Sans', 'Arial', sans-serif;cursor: pointer;line-height: 1.4;text-align: center;white-space: nowrap;vertical-align: middle;background-image: none;border: 1px solid transparent;border-radius: 4px;color: #333;background-color: #fff;border-color: #ccc;}.jspsych-btn:hover {background-color: #ddd;border-color: #aaa;}.jspsych-btn:disabled {background-color: #eee;color: #aaa;border-color: #ccc;cursor: not-allowed;}#jspsych-progressbar-container {color: #555;border-bottom: 1px solid #dedede;background-color: #f9f9f9;margin-bottom: 1em;text-align: center;padding: 8px 0px;width: 100%;line-height: 1em;}#jspsych-progressbar-container span {font-size: 14px;padding-right: 14px;}#jspsych-progressbar-outer {background-color: #eee;width: 50%;margin: auto;height: 14px;display: inline-block;vertical-align: middle;box-shadow: inset 0 1px 2px rgba(0,0,0,0.1);}#jspsych-progressbar-inner {background-color: #aaa;width: 0%;height: 100%;}#jspsych-data-display {text-align: left;}</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Open Science Experiment</h1> <!--BCS Feb2020-->
+<h4 class="author">Bradley Smith</h4> <!--BCS Feb2020-->
+
+
+
+<script src="jspsych-6-2/jspsych.js"></script>
+<script src="jspsych-6-2/plugins/jspsych-html-keyboard-response.js"></script>
+<script src="jspsych-6-2/plugins/jspsych-html-button-response.js"></script>
+<script src="jspsychr/jspsychr.js"></script>
+<script src='create_test_stimuli.js'></script>
+
+
+<script type="text/javascript">
+/* Note this is a js (javascript) code chunk
+
+/* ************************************ */
+/* Added by BCS Feb 2020 */
+/* ************************************ */
+
+  function PlaySound(play_stim) {
+    document.getElementById(play_stim);
+    play_stim.play();
+    //setTimeout(function() {}, 4000);
+  }
+
+  function ChangeColour(button) {
+    document.getElementById(button);
+    button.style.backgroundColor = "#A9A9A9";
+  }
+
+  function UpdateClicked(object_name, arr) {
+    //console.log(object_name);
+    //console.log(arr);
+    n = arr.includes(object_name);
+    //console.log(n)
+    if (!n){
+      arr.push(object_name)
+    }
+    //console.log(arr)
+    return arr
+  }
+
+  function EnableButtons(array){
+    if (array.length == 1){ //should be 10
+      var btns = document.querySelectorAll('.jspsych-html-button-response-button button');
+      for(var i=0; i<btns.length; i++){
+        //btns[i].removeEventListener('click');
+        btns[i].disabled = false;
+        //btns[i].innerHTML = array.join('; ');
+      }
+    }
+    return array;
+  }
+
+// Create unique identifier for subject
+var subject_id = jsPsych.randomization.randomID(15);
+
+// record this data to all trials
+
+jsPsych.data.addProperties({
+  subject: subject_id
+});
+
+
+/* ************************************ */
+/* end BCS additions */
+/* ************************************ */
+
+
+/* experiment parameters */
+var reps_per_trial_type = 1;
+var which_clicked = [];
+
+var welcome = {
+  type: "html-keyboard-response",
+  stimulus: "Welcome to the experiment. This experiment will take no longer than 30 minutes. Press any key to begin.",
+  data: {"phase": "Welcome",},
+};
+
+
+var instructions = {
+  type: "html-keyboard-response",
+  stimulus: "<p>In this experiment, you will be listening to sounds made by babies between the ages of 6-36 months. Your task will be to try and identify characteristics of the baby making those sounds (age, sex, familial language). You will respond by selecting the corresponding button when presented. Please make these judgements based on your initial impressions. You must listen to all audio clips before responding and if there are multiple audio clips they are guaranteed to be from the same child.</p>"+
+  		"<p>Press any key to begin.</p>",
+  data: {"phase": "Instructions",},
+  post_trial_gap: 1000,
+};
+
+
+var testing_trial = {
+  //var click_all = false;
+  //var which_clicked = [];
+	timeline: [
+	{
+		type: 'html-button-response',
+		choices: jsPsych.timelineVariable("choices"),
+		prompt: jsPsych.timelineVariable("prompt"),
+		//choices: ["English","Non-English"],
+		//prompt: "<p>What laguage is spoken in this baby's home?</p>",
+		response_ends_trial: true,
+		stimulus: jsPsych.timelineVariable('stimulus'),
+		data: jsPsych.timelineVariable('data')
+	}],
+	timeline_variables: test_stimuli,
+	randomize_order: true,
+	post_trial_gap: 0, // Gives pause between trials (may not want this?)
+	on_load: function(){
+	  var btns = document.querySelectorAll('.jspsych-html-button-response-button button');
+      for(var i=0; i<btns.length; i++){
+        //btns[i].removeEventListener('click');
+        //btns[i].setAttribute('disabled', 'disabled');
+        btns[i].disabled = true;
+      }
+    which_clicked = [];
+	}
+};
+
+var testing = {
+	timeline: [testing_trial],
+	timeline_variables:[
+		{
+		  choices: ["English","Non-English"],
+		  prompt: "<p>What laguage is spoken in this baby's home?</p>",
+		  data:{
+		    "phase": "Language",
+		  },
+
+		},
+		{
+		  choices: ["0-7","8-18","18-36"],
+		  prompt: "<p>How many months old is the baby?</p>",
+		  data:{
+		    "phase": "Age",
+		  },
+
+		},
+		{
+		  choices: ["Male","Female"],
+		  prompt: "<p>What is the baby's Sex?</p>",
+		  data:{
+		    "phase": "Sex",
+		  },
+
+		},
+	],
+	randomize_order: true,
+	repetitions: 1,
+};
+
+/*set up debrief block*/
+var debrief = {
+  type: "html-keyboard-response",
+  stimulus: "<p>Thanks for participating! Here is the debrief section!</p>",
+  post_trial_gap: 1000
+};
+
+/*set up experiment structure*/
+var timeline = [];
+timeline.push(welcome);
+timeline.push(instructions);
+timeline.push(testing);
+timeline.push(debrief);
+
+/*start experiment*/
+jsPsych.init({
+    timeline: timeline,
+    on_finish: function() {
+        jsPsych.data.displayData();
+    }
+});
+</script>
+
+
+<!-- code folding -->
+
+</body>
+</html>
+
+
+<!--                    -------------------discarded code------------------------
+
+
+
+/*
+var testing_Sex = {
+	timeline: [{
+		type: 'html-button-response',
+		choices: ["Male","Female"],
+		prompt: "<p>What is the baby's Sex?</p>",
+		response_ends_trial: true,
+		stimulus: jsPsych.timelineVariable('stimulus'),
+		data: jsPsych.timelineVariable('data')
+	}],
+	timeline_variables: test_stimuli,
+	randomize_order: true
+}
+
+var testing_Age = {
+	timeline: [{
+		type: 'html-button-response',
+		choices: ["0-7","8-18","18-36"],
+		prompt: "<p>How many months old is the baby?</p>",
+		response_ends_trial: true,
+		stimulus: jsPsych.timelineVariable('stimulus'),
+		data: jsPsych.timelineVariable('data')
+	}],
+	timeline_variables: test_stimuli,
+	randomize_order: false
+}
+
+var testing_Language = {
+	timeline: [{
+		type: 'html-button-response',
+		choices: ["English","Non-English"],
+		prompt: "<p>What laguage is spoken in this baby's home?</p>",
+		response_ends_trial: true,
+		stimulus: jsPsych.timelineVariable('stimulus'),
+		data: jsPsych.timelineVariable('data')
+	}],
+	timeline_variables: test_stimuli,
+	randomize_order: false
+}
+
+var testing = {
+	timeline: [testing_Sex, testing_Age, testing_Language],
+	randomize_order: true,
+	repetitions: 1
+}
+*/
+
+
+/*
+var testing = {
+	timeline: [{
+		type: 'html-button-response',
+		choices: jsPsych.timelineVariable("choices"),
+		prompt: "<p>What is the baby's Sex?</p>",
+		response_ends_trial: true,
+		//stimulus: jsPsych.timelineVariable('stimulus'),
+		stimulus: jsPsych.timelineVariable('stimulus'),
+		//data: jsPsych.timelineVariable('data')
+	}],
+	//timeline_variables: test_stimuli,
+	timeline_variables:[
+		{stimulus: test_stimuli, choices: ["English","Non-English"]},
+		{stimulus: test_stimuli, choices: ["Male","Female"]}
+	],
+	randomize_order: true
+}
+*/
+
+
+
+
+/*
+var loop_testing_trial = {
+  timeline: [testing_trial],
+  loop_function: function(data,which_clicked){
+    if (which_clicked.length<5){
+      return true;
+    } else{
+      return false;
+    }
+  }
+};
+*/
+-->
