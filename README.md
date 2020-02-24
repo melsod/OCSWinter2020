@@ -33,3 +33,7 @@ Thank you to Cychosz et al. for providing the BabbleCor dataset.
 # Other
 
 BabbleCor: https://osf.io/rz4tx/
+
+The Experiment will be hosted on Github. The "Beta" version of the experiment is posted on the url below. This will be updated soon (Feb 2020).
+
+https://smitty0015.github.io/OCSWinter2020/
