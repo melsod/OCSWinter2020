@@ -8,6 +8,7 @@
       -save data to server
       -translate python to R code
       -change parameters to experimental ones
+      -check input data type for survey
 
 
       SOMEONE ELSE:
@@ -21,6 +22,9 @@
       -place experimental text in separate file for easy editing
       -add end survey
 
+
+      ISSUES:
+      -fullscreen may not work in safari
 
 -->
 
@@ -144,13 +148,109 @@ src: local('Open Sans Bold'), local('OpenSans-Bold'), format('truetype');
     return array;
   }
 
+/*
+  function brads_go_fullscreen(){ // from: https://tutorialcodeplay.com/javascript/requestfullscreen-in-javascript.html
+    var targetelement = document.documentElement;  
+  
+    if (targetelement.requestFullscreen)
+    {
+      targetelement.requestFullscreen();
+    } 	  
+    else if (targetelement.webkitRequestFullscreen)
+    {
+      targetelement.webkitRequestFullscreen();
+    }
+    else if (targetelement.mozRequestFullScreen)
+    {
+      targetelement.mozRequestFullScreen();
+    }
+    else if (targetelement.msRequestFullscreen)
+    {
+      targetelement.msRequestFullscreen();
+    }
+  }
+*/
+
+/*
+  function is_fullscreen(){
+  // check if in fullscreen mode
+  if(window.innerWidth == screen.width && window.innerHeight == screen.height){
+    alert("true");
+    return true;
+  }else{alert("false");return false}
+  }
+*/
+
+/////////////////////// check for screen change from full to small, flag it and save the data befor automatically changing from big to small
+
+/*
+document.onfullscreenchange = function(event){
+  if(escape_fullscreen_flag){
+    escape_fullscreen_flag=false;
+  }else{escape_fullscreen_flag=true;}
+*/
+
+/*
+  // check if in fullscreen mode
+  if(window.innerWidth == screen.width && window.innerHeight == screen.height){
+  } else{cont = confirm("This task requires you to remain in fullscreen. Do you wish to continue the task?");
+  if(cont){
+    brads_go_fullscreen();
+  }
+  }
+
+}
+*/
+
+/*
+document.addEventListener('keydown', (event) => {
+  const keyName = event.key;
+
+  if (keyName === 'Escape') {
+    cont = confirm("This task requires you to remain in fullscreen. Do you wish to continue the task?");
+    if (cont){
+      brads_go_fullscreen();
+    };
+    */
+      /*
+      element.requestFullscreen();
+    }else if (element.mozRequestFullScreen) {
+      element.mozRequestFullScreen();
+    } else if (element.webkitRequestFullscreen) {
+      element.webkitRequestFullscreen();
+    } else if (element.msRequestFullscreen) {
+      element.msRequestFullscreen();
+    }*/
+//  };
+/*
+alert(escape_fullscreen_flag);
+    return escape_fullscreen_flag = true;
+  } else{
+  };
+
+  if (event.ctrlKey) {
+    // Even though event.key is not 'Control' (e.g., 'a' is pressed),
+    // event.ctrlKey may be true if Ctrl key is pressed at the same time.
+    alert(`Combination of ctrlKey + ${keyName}`);
+  } else {
+    alert(`Key pressed ${keyName}`);
+  }
+  */
+//}, false);
+
+/* experiment parameters */
+var reps_per_trial_type = 1;
+var which_clicked = [];
+//var escape_fullscreen_flag = false
+
 // Create unique identifier for subject
 var subject_id = jsPsych.randomization.randomID(15);
 
 // record this data to all trials
 
 jsPsych.data.addProperties({
-  subject: subject_id
+  subject: subject_id,
+  //escape_fullscreen: escape_fullscreen_flag,
 });
 
 
@@ -159,28 +259,28 @@ jsPsych.data.addProperties({
 /* ************************************ */
 
 
-/* experiment parameters */
-var reps_per_trial_type = 1;
-var which_clicked = [];
-
 var consent = {
   type: "external-html",
   url: "forms/consent.html",
   cont_btn: "agree-btn",
   data: {"phase": "Consent"},
-}
+};
 
 var welcome = {
   type: "html-keyboard-response",
   stimulus: welcome_text,
-  data: {"phase": "Welcome",},
+  data: {"phase": "Welcome",
+         "full": is_fullscreen(),
+  },
 };
 
 
 var instructions = {
   type: "html-keyboard-response",
   stimulus: instruction_text,
-  data: {"phase": "Instructions",},
+  data: {"phase": "Instructions",
+         "full": is_fullscreen(),
+  },
   post_trial_gap: 1000,
 };
 
@@ -221,6 +321,7 @@ var testing = {
 		  prompt: language_prompt,
 		  data:{
 		    "phase": "Language",
+		    "full": is_fullscreen(),
 		  },
 
 		},
@@ -249,8 +350,8 @@ var testing = {
 var survey_childcare = {
   type: 'survey-text',
   questions: [
-    {prompt: childcare_text, required: true, name: "Childcare"},// check data collected here
-    {prompt: caregiver_text, required: true, name: "Caregiver"},
+    {prompt: childcare_text, required: false, name: "Childcare"},// check data collected here
+    {prompt: caregiver_text, required: false, name: "Caregiver"},
   ],
 	randomize_order: false,
 }
@@ -275,9 +376,9 @@ var survey = {
     {
       type: 'survey-text',
       questions: [
-        {prompt: childcare_text, required: true, name: "Childcare"}, // check data collected here
-        {prompt: caregiver_text, required: true, name: "Caregiver"},
-        {prompt: age_text, required: true, name: "Age"},
+        {prompt: childcare_text, required: false, name: "Childcare"}, // check data collected here
+        {prompt: caregiver_text, required: false, name: "Caregiver"},
+        {prompt: age_text, required: false, name: "Age"},
       ],
     },
     {
@@ -293,15 +394,15 @@ var survey = {
     {
       type: 'survey-multi-choice',
       questions:[
-        {prompt: normal_hearing_prompt, name: 'Normal_hearing', options: normal_hearing_options, required: true, horizontal: true,},
+        {prompt: normal_hearing_prompt, name: 'Normal_hearing', options: normal_hearing_options, required: false, horizontal: true,},
       ],
     },
     {
       type: 'survey-multi-choice',
       questions:[
-        {prompt: Engl_first_lang_prompt, name: 'Engl_first_lang', options: Engl_first_lang_opt, required: true, horizontal: true,},
+        {prompt: Engl_first_lang_prompt, name: 'Engl_first_lang', options: Engl_first_lang_opt, required: false, horizontal: true,},
         {prompt: Know_corp_lang_prompt, name: 'Know_corp_lang', options: Know_corp_lang_opt, required: false, horizontal: true,},
-        {prompt: monolingual_prompt, name: 'monolingual', options: monolingual_opt, required: true, horizontal: true,},
+        {prompt: monolingual_prompt, name: 'monolingual', options: monolingual_opt, required: false, horizontal: true,},
       ],
     },
   ],
@@ -329,7 +430,7 @@ var exit_full_screen = {
 
 /*set up experiment structure*/
 var timeline = [];
-timeline.push(consent);
+//timeline.push(consent);
 timeline.push(welcome);
 timeline.push(enter_full_screen);
 timeline.push(instructions);
