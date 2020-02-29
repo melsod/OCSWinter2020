@@ -471,6 +471,11 @@ var enter_full_screen = {
 var exit_full_screen = {
   type: 'fullscreen',
   fullscreen_mode: false,
+  on_finish: function() {
+    firebase.database().ref(firebase.auth().curentUser.uid).set({
+      data: jsPsych.data.get().values()
+    })
+  }
 };
 
 
@@ -490,12 +495,12 @@ timeline.push(debrief);
 jsPsych.init({
     timeline: timeline,
     //fullscreen: true,
-    on_finish: function() {
-      firebase.database().ref(firebase.auth().curentUser.uid).set({
-        data: jsPsych.data.get().values()
-      })
+    //on_finish: function() {
+      //firebase.database().ref(firebase.auth().curentUser.uid).set({
+        //data: jsPsych.data.get().values()
+      //})
       //jsPsych.data.displayData();
-    }
+    //}
 });
 </script>
 
