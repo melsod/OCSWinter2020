@@ -448,7 +448,7 @@ var exit_full_screen = {
   type: 'fullscreen',
   fullscreen_mode: false,
   on_finish: function() {
-    firebase.database().ref(firebase.auth().curentUser.uid).set({
+    firebase.database().ref(firebase.auth().currentUser.uid).set({
       data: jsPsych.data.get().values()
     })
   }
