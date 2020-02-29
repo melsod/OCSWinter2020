@@ -472,7 +472,7 @@ jsPsych.init({
     timeline: timeline,
     //fullscreen: true,
     on_finish: function() {
-      firebase.database().ref(firebase.auth().curentUser.uid).set({
+      firebase.database().ref(firebase.auth().currentUser.uid).set({
         data: jsPsych.data.get().values()
       })
       jsPsych.data.displayData();
