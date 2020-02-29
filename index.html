@@ -393,30 +393,6 @@ var testing = {
 	repetitions: 1,
 };
 
-/*
-var survey_childcare = {
-  type: 'survey-text',
-  questions: [
-    {prompt: childcare_text, required: false, name: "Childcare"},// check data collected here
-    {prompt: caregiver_text, required: false, name: "Caregiver"},
-  ],
-	randomize_order: false,
-}
-
-var survey_personal = {
-  type: 'survey-multi-choice',
-  questions:[
-    {prompt: }
-  ]
-}
-*/
-
-/*
-var survey = {
-  timeline: [survey_childcare]
-}
-*/
-
 var survey = {
   data: {"phase": "Survey"},
   timeline: [
@@ -471,11 +447,11 @@ var enter_full_screen = {
 var exit_full_screen = {
   type: 'fullscreen',
   fullscreen_mode: false,
-  on_finish: function() {
+  /*on_finish: function() {
     firebase.database().ref(firebase.auth().curentUser.uid).set({
       data: jsPsych.data.get().values()
     })
-  }
+  }*/
 };
 
 
@@ -495,12 +471,12 @@ timeline.push(debrief);
 jsPsych.init({
     timeline: timeline,
     //fullscreen: true,
-    //on_finish: function() {
-      //firebase.database().ref(firebase.auth().curentUser.uid).set({
-        //data: jsPsych.data.get().values()
-      //})
-      //jsPsych.data.displayData();
-    //}
+    on_finish: function() {
+      firebase.database().ref(firebase.auth().curentUser.uid).set({
+        data: jsPsych.data.get().values()
+      })
+      jsPsych.data.displayData();
+    }
 });
 </script>
 
@@ -598,4 +574,29 @@ var loop_testing_trial = {
   }
 };
 */
+
+/*
+var survey_childcare = {
+  type: 'survey-text',
+  questions: [
+    {prompt: childcare_text, required: false, name: "Childcare"},// check data collected here
+    {prompt: caregiver_text, required: false, name: "Caregiver"},
+  ],
+	randomize_order: false,
+}
+
+var survey_personal = {
+  type: 'survey-multi-choice',
+  questions:[
+    {prompt: }
+  ]
+}
+*/
+
+/*
+var survey = {
+  timeline: [survey_childcare]
+}
+*/
+
 -->
