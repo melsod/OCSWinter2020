@@ -584,7 +584,11 @@ var exit_full_screen = {
   fullscreen_mode: false,
   on_finish: function() {
     // save data to the firebase surver at this point 
-    firebase.database().ref(firebase.auth().currentUser.uid).set({
+//    firebase.database().ref(firebase.auth().currentUser.uid).set({
+//      data: jsPsych.data.get().values()
+//    })
+	  // trying to save with experiment generated userid so same IP give different data on each run....may break experiment
+    firebase.database().ref(subject_id).set({
       data: jsPsych.data.get().values()
     })
   }
