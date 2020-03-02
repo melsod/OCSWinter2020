@@ -8,7 +8,7 @@ var language_prompt = "<p>What laguage is spoken in this baby's home?</p>";
 
 var age_choices = ["0-7","8-18","18-36"];
 
-var age_prompt = "<p>How many months old is the baby?</p>";
+var age_prompt = "<p>How many months old is this baby?</p>";
 
 var sex_choices = ["Male","Female"];
 
@@ -34,7 +34,7 @@ var Engl_first_lang_prompt = "Is English your first language?";
 
 var Engl_first_lang_opt = ["Yes", "No"];
 
-var Know_corp_lang_prompt = "Do you know any of the following languages, even a little? (Select all that apply)"; // Spanish, Tsimane', Yeli-Dnye, Tseltal Mayan, or Quechua?"; //Yêlí-Dnye characters don't show up
+var Know_corp_lang_prompt = "Do you know any of the following languages, even a little? (Select all that apply)"; // Spanish, Tsimane', Yeli-Dnye, Tseltal Mayan, or Quechua?"; //YÃªlÃ­-Dnye characters don't show up
 
 var Know_corp_lang_opt = ["Spanish","Tsimane","Yeli-Dnye", "Tseltal Mayan", "Quechua"];
 
