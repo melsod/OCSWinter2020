@@ -482,19 +482,19 @@ var par_age_quest = {
 };
 
 // set up gender question
-gender_quest = {
+var gender_quest = {
   type: 'survey-html-form',
   preamble: gender_prompt,
   html: "<input type='radio' id='Male' name='Gender_Q' value='Male'><label for='Male'>Male</label> <input type='radio' id='Female' name='Gender_Q' value='Female'><label for='Female'>Female</label> <input type='radio' id='Other_gender' name='Gender_Q' value='Other_gender'><label for='Other'>Other</label> <input type='text', name='other_gender_fill_in'>",
 };
 
-country_quest = {
+var country_quest = {
   type: 'survey-html-form',
   preamble: country_prompt,
   html: "<input type='radio' id='Canada' name='Country_Q' value='Canada'><label for='Canada'>Canada</label> <input type='radio' id='USA' name='Country_Q' value='USA'><label for='USA'>USA</label> <input type='radio' id='Other_country' name='Country_Q' value='Other_country'><label for='Other'>Other</label> <input type='text', name='other_country_fill_in'>",
 };
 
-hearing_quest = {
+var hearing_quest = {
   type: 'survey-multi-choice',
   questions:[
     {
@@ -557,6 +557,7 @@ var survey = {
     country_quest,
     hearing_quest,
     first_lang_quest,
+    exp_lang_quest,
     monolingual_quest,
   ],
   on_finish: function(data){
