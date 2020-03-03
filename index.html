@@ -642,19 +642,17 @@ var audio_check = {
       type: "audio-keyboard-response",
       stimulus: 'jspsych-6-2/examples/sound/speech_blue.mp3',
       prompt: blue_audio_check_prompt,
+      post_trial_gap: 500,
     },
     {
       type: "audio-keyboard-response",
       stimulus: 'jspsych-6-2/examples/sound/speech_green.mp3',
       prompt: green_audio_check_prompt,
+      post_trial_gap: 500,
     },
   ],
   loop_function: function(data){
-    responses_data = JSON.parse(data.values()[0].responses);
-    console.log(responses_data);
-    responses_data2 = JSON.parse(data.values()[1].responses);
-    console.log(responses_data2);
-    if(responses_data.response == "b" && responses_data.response == "n"){
+    if(jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b') == data.values()[0].key_press && jsPsych.pluginAPI.convertKeyCharacterToKeyCode('n') == data.values()[1].key_press){
         return false
       }else{
       return true
