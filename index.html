@@ -651,7 +651,9 @@ var audio_check = {
   ],
   loop_function: function(data){
     responses_data = JSON.parse(data.values()[0].responses);
+    console.log(responses_data);
     responses_data2 = JSON.parse(data.values()[1].responses);
+    console.log(responses_data2);
     if(responses_data.response == "b" && responses_data.response == "n"){
         return false
       }else{
