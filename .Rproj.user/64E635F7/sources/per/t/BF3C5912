@@ -1,0 +1,25 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1583185927254.000,
+    "dirty" : false,
+    "encoding" : "UTF-8",
+    "folds" : "",
+    "hash" : "1528692846",
+    "id" : "BF3C5912",
+    "lastKnownWriteTime" : 1583250296,
+    "last_content_update" : 1583250296333,
+    "path" : "C:/Users/brads/Desktop/Babble_Experiment/OCSWinter2020/R/analysis/firedata_test.R",
+    "project_path" : "R/analysis/firedata_test.R",
+    "properties" : {
+        "cursorPosition" : "26,0",
+        "scrollLine" : "0"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 1,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_source"
+}
