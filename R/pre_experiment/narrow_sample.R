@@ -71,7 +71,7 @@ selected_files$file_id <- paste0(selected_files$unique_id, selected_files$clip_I
 
 
 #get rejected files list
-rejected_files <- list.files("./selected_audio_files_age-language_Michael/selected_audio_files_age-language/EXCLUDED",
+rejected_files <- list.files("./audio/selected_audio_files_age-language_Michael/selected_audio_files_age-language/EXCLUDED",
                         pattern = "*.wav")
 
 #remove flaged files
@@ -92,6 +92,7 @@ table(selected_files$age_language)
 #file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),
 #          to = "./audio/selected_audio_files_age-language",
 #          overwrite = TRUE)
+unlink("./audio/selected_audio_files", recursive = TRUE)
 dir.create("./audio/selected_audio_files")
 file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),
           to = "./audio/selected_audio_files",
@@ -130,17 +131,9 @@ selected_files <- d[inds,]
 
 selected_files$file_id <- paste0(selected_files$unique_id, selected_files$clip_ID)
 
-#dir.create("./audio/selected_audio_files_sex")
-#file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),
-#          to = "./audio/selected_audio_files_sex",
-#          overwrite = TRUE)
-file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),
-          to = "./audio/selected_audio_files",
-          overwrite = TRUE)
-
 
 #get rejected files list
-rejected_files <- list.files("./selected_audio_files_sex_Michael/selected_audio_files_sex/EXCLUDED",
+rejected_files <- list.files("./audio/selected_audio_files_sex_Michael/selected_audio_files_sex/EXCLUDED",
                              pattern = "*.wav")
 
 #remove flaged files
@@ -154,6 +147,15 @@ selected_files <- selected_files %>%
 
 table(selected_files$unique_id)
 table(selected_files$child_gender)
+
+#dir.create("./audio/selected_audio_files_sex")
+#file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),
+#          to = "./audio/selected_audio_files_sex",
+#          overwrite = TRUE)
+file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),
+          to = "./audio/selected_audio_files",
+          overwrite = TRUE)
+
 
 # create age-language test stimuli
 txt<-"var sex_stim = [\n"
