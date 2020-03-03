@@ -4,9 +4,9 @@ var instruction_text = "<p>Please read these instructions carefully.</p>"+"<p>Pl
 
 var attention_check_text = "Provide a word:"
 
-var blue_audio_check_prompt = "Press the first letter of the word you just heard?"
+var blue_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Press the first letter of the word you just heard?<p>"
 
-var green_audio_check_prompt = "Press the last letter of the word you just heard?"
+var green_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Press the last letter of the word you just heard?</p>"
 
 var fullscreen_prompt = "Please remain in fullscreen mode for the entire experiment. The experiment will switch to full screen mode when you press the button below."
 
