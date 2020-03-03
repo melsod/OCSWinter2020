@@ -148,6 +148,7 @@ src: local('Open Sans Bold'), local('OpenSans-Bold'), format('truetype');
 <script src="jspsych-6-2/plugins/jspsych-survey-multi-select.js"></script>
 <script src="jspsych-6-2/plugins/jspsych-survey-html-form.js"></script>
 <script src="jspsych-6-2/plugins/jspsych-fullscreen.js"></script>
+<script src="jspsych-6-2/plugins/jspsych-audio-keyboard-response.js"></script>
 <!--<script src="jspsychr/jspsychr.js"></script>-->
 <script src='stimuli/test_stimuli.js'></script>
 <script src='stimuli/exp_text.js'></script>
@@ -616,6 +617,7 @@ var debrief = {
 var enter_full_screen = {
   type: 'fullscreen',
   fullscreen_mode: true,
+  message: fullscreen_prompt,
 };
 
 // prepare an end to full_screen mode 
@@ -634,7 +636,29 @@ var exit_full_screen = {
   }
 };
 
-
+var audio_check = {
+  timeline: [
+    {
+      type: "audio-keyboard-response",
+      stimulus: 'jspsych-6-2/examples/sound/speech_blue.mp3',
+      prompt: blue_audio_check_prompt,
+      post_trial_gap: 500,
+    },
+    {
+      type: "audio-keyboard-response",
+      stimulus: 'jspsych-6-2/examples/sound/speech_green.mp3',
+      prompt: green_audio_check_prompt,
+      post_trial_gap: 500,
+    },
+  ],
+  loop_function: function(data){
+    if(jsPsych.pluginAPI.convertKeyCharacterToKeyCode('b') == data.values()[0].key_press && jsPsych.pluginAPI.convertKeyCharacterToKeyCode('n') == data.values()[1].key_press){
+        return false
+      }else{
+      return true
+    }
+  },
+};
 
 
 /*set up experiment structure*/
@@ -643,6 +667,7 @@ timeline.push(consent);
 timeline.push(welcome);
 timeline.push(enter_full_screen);
 timeline.push(instructions);
+timeline.push(audio_check);
 timeline.push(testing);
 timeline.push(survey);
 timeline.push(exit_full_screen);
