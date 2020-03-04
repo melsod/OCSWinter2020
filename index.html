@@ -618,6 +618,11 @@ var enter_full_screen = {
   type: 'fullscreen',
   fullscreen_mode: true,
   message: fullscreen_prompt,
+  on_load: function(data){
+    var test = document.querySelectorAll('button')[0];
+    test.disabled = true;
+    setTimeout(() => {test.disabled = false;},15000);
+  }
 };
 
 // prepare an end to full_screen mode 
