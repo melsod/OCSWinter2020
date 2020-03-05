@@ -1,14 +1,14 @@
 var welcome_text = "Welcome to the experiment. This experiment should take no longer than 30 minutes. Press any key to begin.";
 
-var instruction_text = "<p>Please read these instructions carefully.</p>"+"<p><b>Turn off all background audio</b> and <b>use headphones</b> for the experiment</b></p>"+"<p>In this experiment, you will be listening to sounds made by babies between the ages of 0-36 months. Your task will be to try and identify characteristics of the baby making those sounds (age, sex, familial language). You will respond by selecting the corresponding button when presented. Please make these judgements based on your initial impressions. Also, when prompted to provide a word, respond by typing in the word 'puppy'. When presented with audio buttons, you must listen to all audio clips before responding and if there are multiple audio clips they are guaranteed to be from the same child.</p>"+"<p>Press any key to begin.</p>";
+var instruction_text = "<p>Please read these instructions carefully.</p>"+"<p>In this experiment, you will be listening to sounds made by babies between the ages of 0-36 months. Your task will be to try and identify characteristics of the baby making those sounds (age, sex, familial language). You will respond by selecting the corresponding button when presented. Please make these judgements based on your initial impressions. Also, when prompted to provide a word, respond by typing in the word 'puppy'. When presented with audio buttons, you must listen to all audio clips before responding and if there are multiple audio clips they are guaranteed to be from the same child.</p>"+"<p>Press any key to begin.</p>";
 
 var attention_check_text = "Provide a word:"
 
-var blue_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Press the first letter of the word you just heard:<p>"
+var blue_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Using the keyboard, press the <b>FIRST</b> letter of the word you just heard:<p>"
 
-var green_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Press the last letter of the word you just heard:</p>"
+var green_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Using the keyboard, press the <b>LAST</b> letter of the word you just heard:</p>"
 
-var fullscreen_prompt = "<p>Please remain in fullscreen mode for the entire experiment. The experiment will switch to full screen mode when you press the button below.</p>"
+var fullscreen_prompt = "<p><b>Please turn off all background audio</b> and <b>use headphones</b> for the experiment</b>. Do not continue until you have turned off other audio and are using headphones.</p>"+"<p>Also, remain in fullscreen mode for the entire experiment. The experiment will switch to full screen mode when you press the button below. It will also record if you exit fullscreen mode.</p>"
 
 var language_choices = ["English","Non-English"];
 
@@ -24,7 +24,7 @@ var sex_prompt = "<p>What is the baby's Sex?</p>";
 
 var debrief_text = "<p>Thanks for participating! If you would like more information about this experiment then please visit <b>https://osf.io/2a6b4</b> </p>";
 
-var childcare_text = "Estimate how many months you have worked in childcare? (answer '0' if none)";
+var childcare_text = "In the last 5 years, estimate how many months you have worked/volunteered in childcare or an area with significant exposure to infants? (answer '0' if none)";
 
 var caregiver_text = "In the last 5 years, estimate how many months you have you been the primary caregiver for a child under the age of 3 years (answer '0' if none)"; //different than on prereg
 

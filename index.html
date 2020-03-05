@@ -1,7 +1,7 @@
 <!-- adapted Crumps recognition memory task: Bradley Smith (BCS) Feb 2020-->
 
 <!-- LIST OF THINGS TO FIX/ADD:
-      -change parameters to experimental ones (including clips)
+      
 
       SOMEONE ELSE:
       -write debrief
@@ -17,6 +17,7 @@
 
 
       COMPLETED:
+      -change parameters to experimental ones (including clips)
       -force full audio to play before any other button can be pressed
       -correct answers in test_stimuli
       -informed consent with letterhead
@@ -221,28 +222,6 @@ src: local('Open Sans Bold'), local('OpenSans-Bold'), format('truetype');
       }
 	}
 
-/*
-  function brads_go_fullscreen(){ // from: https://tutorialcodeplay.com/javascript/requestfullscreen-in-javascript.html
-    var targetelement = document.documentElement;  
-  
-    if (targetelement.requestFullscreen)
-    {
-      targetelement.requestFullscreen();
-    } 	  
-    else if (targetelement.webkitRequestFullscreen)
-    {
-      targetelement.webkitRequestFullscreen();
-    }
-    else if (targetelement.mozRequestFullScreen)
-    {
-      targetelement.mozRequestFullScreen();
-    }
-    else if (targetelement.msRequestFullscreen)
-    {
-      targetelement.msRequestFullscreen();
-    }
-  }
-*/
 
 // funciton to check if in fullscreen mode
   function is_fullscreen(){
@@ -318,20 +297,6 @@ var instructions = {
     }
   },
 };
-
-
-/*
-var instructions = {
-  type: "html-keyboard-response",
-  stimulus: instruction_text,
-  data: {"phase": "Instructions",
-  },
-  post_trial_gap: 1000,
-  on_finish: function(data){
-    data.fullscreen = is_fullscreen();
-  }
-};
-*/
 
 
 // set up trials asking about the baby's sex 
@@ -618,6 +583,11 @@ var enter_full_screen = {
   type: 'fullscreen',
   fullscreen_mode: true,
   message: fullscreen_prompt,
+  on_load: function(data){
+    var test = document.querySelectorAll('button')[0];
+    test.disabled = true;
+    setTimeout(() => {test.disabled = false;},15000);
+  }
 };
 
 // prepare an end to full_screen mode 
@@ -969,5 +939,39 @@ alert(escape_fullscreen_flag);
   */
 //}, false);
 
+/*
+  function brads_go_fullscreen(){ // from: https://tutorialcodeplay.com/javascript/requestfullscreen-in-javascript.html
+    var targetelement = document.documentElement;  
+  
+    if (targetelement.requestFullscreen)
+    {
+      targetelement.requestFullscreen();
+    } 	  
+    else if (targetelement.webkitRequestFullscreen)
+    {
+      targetelement.webkitRequestFullscreen();
+    }
+    else if (targetelement.mozRequestFullScreen)
+    {
+      targetelement.mozRequestFullScreen();
+    }
+    else if (targetelement.msRequestFullscreen)
+    {
+      targetelement.msRequestFullscreen();
+    }
+  }
+*/
+/*
+var instructions = {
+  type: "html-keyboard-response",
+  stimulus: instruction_text,
+  data: {"phase": "Instructions",
+  },
+  post_trial_gap: 1000,
+  on_finish: function(data){
+    data.fullscreen = is_fullscreen();
+  }
+};
+*/
 
 -->
