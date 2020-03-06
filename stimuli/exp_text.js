@@ -12,7 +12,7 @@ var fullscreen_prompt = "<p><b>Please turn off all background audio</b> and <b>u
 
 var language_choices = ["English","Non-English"];
 
-var language_prompt = "<p>What laguage do you think is spoken in this baby's home?</p>";
+var language_prompt = "<p>What language do you think is spoken in this baby's home?</p>";
 
 var age_choices = ["0-7","8-18","18-36"];
 
@@ -42,7 +42,7 @@ var Engl_first_lang_prompt = "Is English your first language?";
 
 var Engl_first_lang_opt = ["Yes", "No"];
 
-var Know_corp_lang_prompt = "Do you have significant exposure to / conversational experience with any of the following langauages? (Select all that apply)"; // Spanish, Tsimane', Yeli-Dnye, Tseltal Mayan, or Quechua?"; //Yêlí-Dnye characters don't show up
+var Know_corp_lang_prompt = "Do you have significant exposure to / conversational experience with any of the following languages? (Select all that apply)"; // Spanish, Tsimane', Yeli-Dnye, Tseltal Mayan, or Quechua?"; //Yêlí-Dnye characters don't show up
 
 var Know_corp_lang_opt = ["Spanish","Tsimane","Yeli-Dnye", "Tseltal Mayan", "Quechua"];
 
