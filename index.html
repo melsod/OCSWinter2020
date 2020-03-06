@@ -613,12 +613,14 @@ var audio_check = {
       stimulus: 'jspsych-6-2/examples/sound/speech_blue.mp3',
       prompt: blue_audio_check_prompt,
       post_trial_gap: 500,
+      data: {"phase":"audio_check"},
     },
     {
       type: "audio-keyboard-response",
       stimulus: 'jspsych-6-2/examples/sound/speech_green.mp3',
       prompt: green_audio_check_prompt,
       post_trial_gap: 500,
+      data: {"phase":"audio_check"},
     },
   ],
   loop_function: function(data){
