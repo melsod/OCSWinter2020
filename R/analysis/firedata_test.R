@@ -28,9 +28,11 @@ data<-rbind.fill(data)
 
 mean(data$correct, na.rm = T)
 
+aggregate(correct~phase,data = data, mean)
+aggregate(correct~subject,data = data, mean)
 
 
-
+hist(as.numeric(subset(data,data$phase=="Age")$button_pressed))
 
 
 
