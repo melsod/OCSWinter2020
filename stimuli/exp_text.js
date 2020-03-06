@@ -26,7 +26,7 @@ var debrief_text = "<p>Thanks for participating! If you would like more informat
 
 var childcare_text = "In the last 5 years, estimate how many months you have worked/volunteered in childcare or an area with significant exposure to infants? (answer '0' if none)";
 
-var caregiver_text = "In the last 5 years, estimate how many months you have you been the primary caregiver for a child under the age of 3 years (answer '0' if none)"; //different than on prereg
+var caregiver_text = "In the last 5 years, estimate how many months you have been the primary caregiver for a child under the age of 3 years (answer '0' if none)"; //different than on prereg
 
 var age_text = "What is your age in years?";
 
