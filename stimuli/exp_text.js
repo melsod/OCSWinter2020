@@ -1,4 +1,4 @@
-var welcome_text = "Welcome to the experiment. This experiment should take no longer than 30 minutes. Press any key to begin.";
+var welcome_text = "<p>Welcome to the experiment. This experiment should take no longer than 30 minutes.</p> <p>Press any key to begin.</p>";
 
 var instruction_text = "<p>Please read these instructions carefully.</p>"+"<p>In this experiment, you will be listening to sounds made by babies between the ages of 0-36 months. Your task will be to try and identify characteristics of the baby making those sounds (age, sex, familial language). You will respond by selecting the corresponding button when presented. Please make these judgements based on your initial impressions. Also, when prompted to provide a word, respond by typing in the word 'puppy'. When presented with audio buttons, you must listen to all audio clips before responding and if there are multiple audio clips they are guaranteed to be from the same child.</p>"+"<p>Press any key to begin.</p>";
 
@@ -8,7 +8,7 @@ var blue_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Using the keyboard, 
 
 var green_audio_check_prompt = "<p><b>Audio Check</b></p> <p>Using the keyboard, press the <b>LAST</b> letter of the word you just heard:</p>"
 
-var fullscreen_prompt = "<p><b>Please turn off all background audio</b> and <b>use headphones</b> for the experiment</b>. Do not continue until you have turned off other audio and are using headphones.</p>"+"<p>Also, remain in fullscreen mode for the entire experiment. The experiment will switch to full screen mode when you press the button below. It will also record if you exit fullscreen mode.</p>"
+var fullscreen_prompt = "<p><b>Please turn off all background audio</b> and <b>use headphones</b> for the experiment</b>. Do not continue until you have turned off all other audio and are using headphones.</p>"+"<p>Also, remain in fullscreen mode for the entire experiment. The experiment will switch to full screen mode when you press the button below. It will also record if you exit fullscreen mode.</p>"
 
 var language_choices = ["English","Non-English"];
 
