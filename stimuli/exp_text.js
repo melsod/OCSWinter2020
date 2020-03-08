@@ -22,7 +22,7 @@ var sex_choices = ["Male","Female"];
 
 var sex_prompt = "<p>What is the baby's Sex?</p>";
 
-var debrief_text = "<p>Thanks for participating! If you would like more information about this experiment then please visit <b>https://osf.io/2a6b4</b> </p>";
+var debrief_text = "<p>The purpose of this study was to use participant ratings to examine the characteristics of infant vocalizations. Your answers will be used in our experiment in order to determine if participants are able to accurately identify the infants’ sex, age range and language above random chance. We will also assess if childcare and caregiving experience have a relationship with participants’ ability to identify the infants’ characteristics.</p> <p>Thank you for participating in this study. If you have any questions you can access more information about this experiment at <b>https://osf.io/2a6b4</b> </p>";
 
 var childcare_text = "In the last 5 years, estimate how many months you have worked/volunteered in childcare or an area with significant exposure to infants? (answer '0' if none)";
 
