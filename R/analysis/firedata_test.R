@@ -7,6 +7,7 @@ library(fireData) # https://github.com/Kohze/fireData
 
 # secret key = JTRER28zbNsqNrE0vZRoal74D3JujQaQHjrUG5FW
 
+# download all files from database
 dataBackup(projectURL = "https://ocswinter2020.firebaseio.com",
            secretKey = "JTRER28zbNsqNrE0vZRoal74D3JujQaQHjrUG5FW",
            "data.json")
@@ -17,18 +18,47 @@ library("jsonlite")
 
 #data <- jsonlite::fromJSON(txt = "data.json")
 
-data<-unlist(jsonlite::fromJSON("data.json"), recursive = FALSE, use.names = TRUE)
+# choose the short_exp_test_data.json file in R/analysis folder
+# choose whatever data file you want to analyze
+data<-unlist(jsonlite::fromJSON(file.choose()), recursive = FALSE, use.names = TRUE)
+
 # install.packages("plyr")
 library("plyr")
+
+# collapse json levels
 data<-rbind.fill(data)
 
+# average correct across all participants/conditions
 mean(data$correct, na.rm = T)
 
+# look at averages across groups
+aggregate(correct~phase,data = data, mean)
+aggregate(correct~subject,data = data, mean)
+agg<-aggregate(correct~subject*phase,data = data, mean)
+
+# subset to sex question and t.test
+sub<-subset(agg,agg$phase=="Sex")
+t.test(sub$correct,mu = .5)
+
+# subset to age question and t.test
+sub<-subset(agg,agg$phase=="Age")
+t.test(sub$correct,mu = 1/3)
+
+# subset to language questions and t.test
+sub<-subset(agg,agg$phase=="Language")
+t.test(sub$correct,mu = .5)
+
+# looking at frequence to choosing age buttons
+hist(as.numeric(subset(data,data$phase=="Age")$button_pressed))
+
+
+# playing around with analysis
+# library(ez)
+# ezANOVA(data = subset(data,data$phase=="Age"),dv = correct,wid = subject,within = age_group,detailed = T)
 
 
 
-
-
+################### Discarded Code #################################
 
 # install.packages("rjson")
 # library(rjson)
