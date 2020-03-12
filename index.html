@@ -398,7 +398,7 @@ var age_trials = {
 
 // put all trial types together in one timeline 
 var testing = {
-	timeline: [sex_trials, language_trials, age_trials],
+	timeline: jsPsych.randomization.repeat([sex_trials, language_trials, age_trials],1),
 	randomize_order: true,
 	repetitions: 1,
 };
