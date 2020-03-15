@@ -8,7 +8,7 @@ revSubstr <- function(x, start, stop) {
 stimuli <- function(file_name, i){
   file_name_wo_ext <- substr(file_name, 1, nchar(file_name)-4)
   paste0(
-    '<audio src="audio/selected_audio_files/',
+    '<audio src="audio/selected_audio_files/clips_to_use/',
     revSubstr(file_name, start = 1, stop = 14),
     '" id = "clip_',
     file_name_wo_ext,
