@@ -219,7 +219,8 @@ var which_clicked = [];
 var subject_id = jsPsych.randomization.randomID(15);
 
 // Get the time that the experiment began (ms since 1 January 1970)
-var start_time = Date().getTime();
+//var start_time = new Date().getTime();
+var start_time = new Date().getTime();
 
 // record this data to all trials
 jsPsych.data.addProperties({
