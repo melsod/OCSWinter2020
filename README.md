@@ -1,3 +1,12 @@
+<!--
+need to fix and comment:
+  -firedata_test.R
+  -data_cleaning.R
+  
+need to write:
+  -analysis file
+-->
+
 # Open Collaborative Science PSYC 4540 T39/7310 T34 Winter 2020
 
 This is the repository for PSYC 4540 T39/7310 T34, a course on Open and Collaborative Science in the Psychology Department at the University of Manitoba, Winter 2020 (Instructor: Dr. Melanie Soderstrom). During the course, there will be a class-wide group research project where Open and Collaborative Science tools and principles will be applied.The objective will be a fully open and pre-registered project that will be submitted for (possible peer review and) publication.
@@ -18,13 +27,16 @@ In this experiment, adult participants will hear a series of short audio clips o
 
 This repository will be used to store all of the code and data for this project. Other material regarding the project can be found at our open science page: https://osf.io/2a6b4/
 
-The code for our selection of BabbleCor clips is programmed in R. All statistical analyses will also be completed using the R programming language. 
+The experiment can be viewed at https://melsod.github.io/OCSWinter2020/
 
-The experiment will be programmed using jsPsych, a JavaScript library for running behavioural experiments in a web browser.
+The experiment is run using [jsPsych](jspsych-6-2) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis).
+
+Our selection of Babble Clips used in the experiment is found in the [Selected Audio Files Folder](audio/selected_audio_files). The clips found in the two folders were selected by an [R Script](R/pre_experiment/sample_clips.R). After screening of the clips by three of the contributers (a copy of the excluded files are found [here](audio/Exclusion_files)) another [R Script](R/pre_experiment/narrow_sample.R) generated the list of files that will be presented in the experiment (a copy of these files are found [here](audio\selected_audio_files\clips_to_use)).
+
 
 # Contributors
 
-Melanie Soderstrom, Jackie Spear, Jarod Joshi, Bradley Smith, Barbie Jain, Spenser Martin, Michael Mielniczek, Olivia Cadieux, Carly Cressman, Jolyn Sawatzky, Alanna Beyak, Essence Perera, Derek Trudel, Sara Montazeri, Thomas Thompson, Matthew Cook
+Melanie Soderstrom, Alanna Beyak, Olivia Cadieux, Matt Cook, Carly Cressman, Barbie Jain, Jarod Joshi, Spenser Martin, Michael Mielniczek, Sara Montazeri, Essence Perera, Jolyn Sawatzky, Bradley Smith, Jackie Spear, Thomas Thompson, Derek Trudel, Jianjie Zeng
 
 # Acknowledgements 
 
@@ -33,7 +45,3 @@ Thank you to Cychosz et al. for providing the BabbleCor dataset.
 # Other
 
 BabbleCor: https://osf.io/rz4tx/
-
-The Experiment will be hosted on Github. The "Beta" version of the experiment is posted on the url below. This will be updated soon (Feb 2020).
-
-https://smitty0015.github.io/OCSWinter2020/
