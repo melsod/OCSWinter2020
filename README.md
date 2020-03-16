@@ -29,7 +29,7 @@ This repository will be used to store all of the code and data for this project.
 
 The experiment can be viewed at https://melsod.github.io/OCSWinter2020/
 
-The experiment is run using [jsPsych](jspsych-6-2) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis).
+The experiment is run using [jsPsych](https://www.jspsych.org/) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis).
 
 Our selection of Babble Clips used in the experiment is found in the [Selected Audio Files Folder](audio/selected_audio_files). The clips found in the two folders were selected by an [R Script](R/pre_experiment/sample_clips.R). After screening of the clips by three of the contributers (a copy of the excluded files are found [here](audio/Exclusion_files)) another [R Script](R/pre_experiment/narrow_sample.R) generated the list of files that will be presented in the experiment (a copy of these files are found [here](audio\selected_audio_files\clips_to_use)).
 
