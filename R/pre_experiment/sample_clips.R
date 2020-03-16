@@ -1,98 +1,95 @@
-# Matt: basically we need to adapt this code to now subset to not only 10 clips per baby 
-# but to balance the number of babies that fit in our experimental cells. Putting just those
-# into selected_files
+# sampled with Rstudio 1.2.5019
+#              R 3.6.1 (2019-07-05)
 
 # install.packages("tidyverse")
 library(tidyverse)
 
-#set working directory to where private metadata and unzipped clips directory live
-try(setwd("/home/smithb/Dropbox/PSYC7310Open"))
-try(setwd("C:/Users/brads/Dropbox/PSYC7310Open"))
-file<-file.choose()
-d <- read.csv(file)
-
-#remove "-" from Casillas-Yeli as it causes problems in javascript/html
-library(plyr)
-d$corpus<-revalue(d$corpus, c("Casillas-Yeli"="CasillasYeli"))
-#setwd("C:/Users/Matt/Downloads/")
+# Will need the private_metadata.csv file from BabbleCor: https://osf.io/rz4tx/
+# by contacting the authours and submitting the data usage agreement
+# put the file in your project folder but DO NOT share publicly on github
 d <- read.csv("private_metadata.csv")
 
-#add a column called with a unique id (the original child id pasted together with the corpus)
+# add a column called with a unique id (the original child id pasted together with the corpus)
 d <- d %>% mutate(unique_id = paste0(child_ID, corpus))
 
-#get rid of data from the warlaumont corpus
+# get rid of data from the warlaumont corpus (it has a mix of english and non-english)
 d <- d %>% filter(corpus != c("Warlaumont"))
 
-#make a new column with the language
-#d <- d %>% mutate(language = ifelse(corpus == "Seedlings",))
-d <- d %>% mutate(language = ifelse(corpus == "Seedlings", "English","Non-English"))
+# make a new column with the language
+d <- d %>% mutate(language = ifelse(corpus == "Seedlings",
+                                    "English",
+                                    "Non-English"))
 
-#make a categorical age variable based on 07, 8-18, and 19-36 groupings
-d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7, # what is going on here?
+# make a categorical age variable based on 07, 8-18, and 19-36 groupings
+d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7,
                                       "0-7",
                                       ifelse(age_mo_round <= 18,
                                              "8-18",
                                              "19-36")))
 
-# added just so that I would get a decently small subset to play around with while programming the experiment
-#d <- subset(d,d$age_groups=="8-18"&d$language=="Non-English")
+# make grouping variable for age-language question
+d <- d %>% mutate(age_language = paste0(age_groups, language))
+
+# keep only canonical and non-canonical
+d <- d %>% filter(Answer %in% c("Canonical", "Non-canonical"))
 
 
 
+
+###SAMPLE FOR AGE-LANGUAGE RESEARCH QUESTION:
+
+# split into six groups (age*language)
+s <- split(d, d$age_language)
+
+# sample n unique ids
+min_n <- min(sapply(s, function(x){length(unique(x$unique_id))}))
+ids <- sapply(s, function(x){sample(unique(x$unique_id), min_n, FALSE)})
+ids <- c(ids)
+
+# sample n clips from each of those unique ids
+n_clips <- 20
 set.seed(1234)
-selected_files <- d %>%
-  filter(Answer %in% c("Canonical", "Non-canonical")) %>%
-  group_by(unique_id) %>%
-  sample_n(10)
+inds <- sapply(ids, function(x){
+            sample(which(d$unique_id %in% x), n_clips, FALSE)
+        })
+inds <- c(inds)
 
+selected_clips <- as.character(d$clip_ID[inds])
 
-# try's added so that it works on both my linux and windows. This will need to change to be more general
-try(dir.create("./selected_audio_files"))
-try(dir.create("C:/Users/brads/Dropbox/PSYC7310Open/experiments/Babble_Exp/selected_audio_files"))
-
-# similar issues below, needs to be more general probably
-
-# copy selected audio files to new location
-# file.copy(from = paste0("./clips_corpus/", selected_files$clip_ID),
-#           to = "./selected_audio_files",
-#           overwrite = TRUE)
-file.copy(from = paste0("./clips_corpus/", selected_files$clip_ID),
-          to = "./experiments/Babble_Exp/selected_audio_files",
+unlink("./audio/selected_audio_files/selected_audio_files_age_language", recursive = TRUE)
+dir.create("./audio/selected_audio_files/selected_audio_files_age_language")
+file.copy(from = paste0("./audio/clips_corpus/", selected_clips),
+          to = "./audio/selected_audio_files/selected_audio_files_age_language",
           overwrite = TRUE)
 
-# I'm sure we can do this without constantly changing wd but that was my quick solution
-try(setwd("./experiments/Babble_Exp/selected_audio_files"))
-try(setwd("C:/Users/brads/Dropbox/PSYC7310Open/experiments/Babble_Exp/selected_audio_files"))
-
-# rename the "selected_files" to inclue the corpus name/unique id at the beginning
-files_list<-list.files()
-for(i in 1:length(selected_files$clip_ID)){
-  file.rename(files_list[i],paste0(selected_files$unique_id[i],selected_files$clip_ID[i]))
-}
-
-# again, reseting the wd
-try(setwd("/home/smithb/Dropbox/PSYC7310Open"))
-try(setwd("C:/Users/brads/Dropbox/PSYC7310Open"))
 
 
-# I have no idea why these are duplicated. I'm guessing it has to do with git just keeping additions and not removing things that were deleted
-# ergo I have now commented these out
 
-# d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7, 
-#                                       "0-7", 
-#                                       ifelse(age_mo_round <= 18, 
-#                                              "8-18", 
-#                                              "19-36")))
-# 
-# 
-# set.seed(1234)
-# selected_files <- d %>%
-#     filter(Answer %in% c("Canonical", "Non-canonical")) %>%
-#     group_by(unique_id) %>%
-#     sample_n(10)
-# 
-# 
-# dir.create("./selected_audio_files")
-# file.copy(from = paste0("./clips/clips_corpus/", selected_files$clip_ID), 
-#           to = "./selected_audio_files", 
-#           overwrite = TRUE)
+###SAMPLE FOR SEX RESEARCH QUESTION:
+
+#sample equal number of babies both male and female only non-English all from the same age group
+d <- d %>% filter(language == "Non-English" & age_groups == "8-18")
+s <- split(d, d$child_gender)
+
+#sample n unique ids
+min_n <- min(sapply(s, function(x){length(unique(x$unique_id))}))
+ids <- sapply(s, function(x){sample(unique(x$unique_id), min_n, FALSE)})
+ids <- c(ids)
+
+#sample n clips from each of those unique ids
+n_clips <- 20
+set.seed(1234)
+inds <- sapply(ids, function(x){
+    sample(which(d$unique_id %in% x), n_clips, FALSE)
+})
+inds <- c(inds)
+
+selected_clips <- as.character(d$clip_ID[inds])
+
+
+unlink("./audio/selected_audio_files/selected_audio_files_sex", recursive = TRUE)
+dir.create("./audio/selected_audio_files/selected_audio_files_sex")
+file.copy(from = paste0("./audio/clips_corpus/", selected_clips),
+          to = "./audio/selected_audio_files/selected_audio_files_sex",
+          overwrite = TRUE)
+

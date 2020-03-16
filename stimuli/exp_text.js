@@ -49,3 +49,5 @@ var Know_corp_lang_opt = ["Spanish","Tsimane","Yeli-Dnye", "Tseltal Mayan", "Que
 var monolingual_prompt = "Do you consider yourself monolingual (only speaking one language)?";
 
 var monolingual_opt = ["Yes", "No"];
+
+var provide_number_txt = "You must provide a whole number";

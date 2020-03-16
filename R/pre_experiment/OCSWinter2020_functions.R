@@ -8,7 +8,7 @@ revSubstr <- function(x, start, stop) {
 stimuli <- function(file_name, i){
   file_name_wo_ext <- substr(file_name, 1, nchar(file_name)-4)
   paste0(
-    '<audio src="audio/selected_audio_files/',
+    '<audio src="audio/selected_audio_files/clips_to_use/',
     revSubstr(file_name, start = 1, stop = 14),
     '" id = "clip_',
     file_name_wo_ext,
@@ -19,7 +19,7 @@ stimuli <- function(file_name, i){
     '); window.which_clicked = UpdateClicked(this.id,window.which_clicked);',
     'window.which_clicked = EnableButtons(window.which_clicked); PlaySound(clip_',
     file_name_wo_ext,
-    ');" class="jspsych-btn" style="background-color: white; height:50px;width:100px">Clip ',
+    ');" class="jspsych-btn" style="background-color: white;">Clip ',
     i,
     '</button>'
   )
@@ -49,6 +49,7 @@ json_entry <- function(selected_files, unique_id){
   
   for(i in 1:nrow(baby_data)){
     all_stimuli <- paste0(all_stimuli, stimuli(baby_data[i, ]$file_id, i))
+    if(i == nrow(baby_data)/2){all_stimuli<-paste0(all_stimuli, "<br>")}
   }
   
   paste0(
