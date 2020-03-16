@@ -233,6 +233,9 @@ var which_clicked = [];
 // Create unique identifier for subject
 var subject_id = jsPsych.randomization.randomID(15);
 
+// to check for consent
+var consent_check = false;
+
 // get the id number for the SONA participant so that we can grant credits automatically
 var SONA_ID = getUrlParam('id','Empty');
 
@@ -249,7 +252,7 @@ jsPsych.data.addProperties({
 var consent = {
   type: "external-html",
   url: "forms/consent.html",
-  cont_btn: "agree-btn",
+  cont_btn: ["agree-btn","disagree-btn"],
   data: {"phase": "Consent"},
 };
 
@@ -640,10 +643,26 @@ var audio_check = {
   },
 };
 
+var no_consent = {
+  timeline: [
+    type: "external-html",
+    url: "forms/no_consent.html",
+    cont_btn: "Exit-btn",
+    data: {"phase": "No_consent"},],
+  conditional_function: function(data){
+    if(consent_check == false){
+      return true
+    }else{
+      return false
+    }
+  }
+};
+
 
 /*set up experiment structure*/
 var timeline = [];
 timeline.push(consent);
+timeline.push(no_consent);
 timeline.push(welcome);
 timeline.push(enter_full_screen);
 timeline.push(instructions);

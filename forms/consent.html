@@ -25,16 +25,7 @@
                     <p>
           
                     <html><head><meta http-equiv="Content-Type" content="text/html;charset=utf-8" /><link href="style.css" rel="stylesheet" type="text/css" /><title>Unknown</title></head><body><div class="calibre" id="calibre_link-0">
-	<!--
-	<p class="block_">Informed Consent</p>
-	<p class="block_1">Melanie Soderstrom, Ph.D.</p>
-	<p class="block_2"><img src="img/UM_Logo.png" alt="Image" title="University of Manitoba Logo" class="calibre1" width="25%"/>Associate Professor</p>
-	<p class="block_2">Department of Psychology<br class="calibre2" />University of Manitoba</p>
-	<p class="block_2">Winnipeg, MB, R3T 2N2</p>
-	<p class="block_3">M_Soderstrom@umanitoba.ca</p>
-	<p class="block_3">Tel: 204-474-8777</p>
-	<p class="block_4">&nbsp;</p>
-	-->
+
 	<p>
 	  <table style="width:80%">
 	    <tr>
@@ -96,7 +87,7 @@ There are no risks involved greater than that which you might experience in your
                     <!--
                     <button type="button" class="btn btn-primary btn-lg" onClick="window.location='/exp?hitId={{ hitid }}&assignmentId={{ assignmentid }}&workerId={{ workerid }}'">
                     -->
-                    <button type="button"; id = "agree-btn"; class="btn btn-primary btn-lg"; style="font-size: 24pt">I agree</button>
+                    <button type="button"; id = "agree-btn"; class="btn btn-primary btn-lg"; style="font-size: 24pt"; onClick = "function(){consent_check = true}">I agree</button>
                    <!--
                     <span class="glyphicon glyphicon-ok"></span> I agree 
                     </button>
@@ -104,7 +95,11 @@ There are no risks involved greater than that which you might experience in your
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <button type="button" class="btn btn-danger btn-lg" onClick="window.location.href = 'forms/no_consent_deb.html';" style="font-size: 24pt"
+<!--
+                    <button type="button"; id = "disagree-btn"; class="btn btn-danger btn-lg"; onClick="window.location.href = 'forms/no_consent_deb.html';"; style="font-size: 24pt"
+                    -->
+                    <button type="button"; id = "disagree-btn"; class="btn btn-danger btn-lg"; style="font-size: 24pt"
+
                     <span class="glyphicon glyphicon-ban-circle"></span> No, I do not want to participate
                     </button>
                 </center>
