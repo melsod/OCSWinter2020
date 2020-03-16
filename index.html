@@ -209,6 +209,21 @@ src: local('Open Sans Bold'), local('OpenSans-Bold'), format('truetype');
   }else{return false}
   }
 
+  function getUrlVars() {
+    var vars = {};
+    var parts = window.location.href.replace(/[?&]+([^=&]+)=([^&]*)/gi,function(m,key,value) {
+        vars[key] = value;
+    });
+    return vars;
+  }
+
+  function getUrlParam(parameter, defaultvalue){
+    var urlparameter = defaultvalue;
+    if(window.location.href.indexOf(parameter) > -1){
+        urlparameter = getUrlVars()[parameter];
+        }
+    return urlparameter;
+  }
 
 /* experiment parameters */
 
@@ -217,6 +232,10 @@ var which_clicked = [];
 
 // Create unique identifier for subject
 var subject_id = jsPsych.randomization.randomID(15);
+
+// get the id number for the SONA participant so that we can grant credits automatically
+var SONA_ID = getUrlParam('id','Empty');
+console.log(SONA_ID);
 
 // Get the time that the experiment began (ms since 1 January 1970)
 var start_time = new Date().getTime();
@@ -639,6 +658,7 @@ timeline.push(debrief);
 jsPsych.init({
     timeline: timeline,
     on_finish: function() {
+      window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=1298&credit_token=73b99a219f5e4c0aa3a73586083bf77e&survey_code="+SONA_ID;
       // display data at end:
       //jsPsych.data.displayData();
     }
