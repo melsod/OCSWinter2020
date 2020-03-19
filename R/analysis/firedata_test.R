@@ -52,7 +52,10 @@ sub<-subset(agg,agg$phase=="Language")
 t.test(sub$correct,mu = .5)
 
 # looking at frequence to choosing age buttons
+hist(as.numeric(subset(data,data$phase=="Sex")$button_pressed))
 hist(as.numeric(subset(data,data$phase=="Age")$button_pressed))
+hist(as.numeric(subset(data,data$phase=="Language")$button_pressed))
+
 
 
 # playing around with analysis
