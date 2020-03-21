@@ -36,7 +36,7 @@ mean(data$correct, na.rm = T)
 
 # look at averages across groups
 aggregate(correct~phase,data = data, mean)
-aggregate(correct~subject,data = data, mean)
+hist(aggregate(correct~subject,data = data, mean)$correct)
 agg<-aggregate(correct~subject*phase,data = data, mean)
 
 # subset to sex question and t.test
