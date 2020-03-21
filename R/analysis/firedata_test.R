@@ -28,12 +28,15 @@ library("plyr")
 # collapse json levels
 data<-rbind.fill(data)
 
+# number of subjects
+length(unique(data$subject))
+
 # average correct across all participants/conditions
 mean(data$correct, na.rm = T)
 
 # look at averages across groups
 aggregate(correct~phase,data = data, mean)
-aggregate(correct~subject,data = data, mean)
+hist(aggregate(correct~subject,data = data, mean)$correct)
 agg<-aggregate(correct~subject*phase,data = data, mean)
 
 # subset to sex question and t.test
@@ -49,40 +52,12 @@ sub<-subset(agg,agg$phase=="Language")
 t.test(sub$correct,mu = .5)
 
 # looking at frequence to choosing age buttons
+hist(as.numeric(subset(data,data$phase=="Sex")$button_pressed))
 hist(as.numeric(subset(data,data$phase=="Age")$button_pressed))
+hist(as.numeric(subset(data,data$phase=="Language")$button_pressed))
+
 
 
 # playing around with analysis
 # library(ez)
 # ezANOVA(data = subset(data,data$phase=="Age"),dv = correct,wid = subject,within = age_group,detailed = T)
-
-
-
-################### Discarded Code #################################
-
-# install.packages("rjson")
-# library(rjson)
-#df<-as.data.frame(data$HVB58WohafSX2mPNi4ZDnucWkFt2)
-# install.packages("jsonlite")
-# library("jsonlite")
-# data <- rjson::fromJSON(file = "data.json")
-# data
-# 
-# data<-jsonlite::fromJSON("data.json")
-# 
-# data2<-unlist(data,recursive = FALSE,use.names = TRUE)
-# 
-# data3<-unlist(data2,recursive = FALSE)
-# 
-# data4<-data3[[1]]
-# 
-# par1<-data$HVB58WohafSX2mPNi4ZDnucWkFt2
-# 
-# par1<-data2$HVB58WohafSX2mPNi4ZDnucWkFt2.data
-# 
-# library(plyr)
-# 
-# new<-rbind.fill(data2)
-# 
-# 
-# mean(new$correct, na.rm = T)
