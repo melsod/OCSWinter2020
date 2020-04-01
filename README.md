@@ -9,13 +9,13 @@ need to write:
 
 # Open Collaborative Science PSYC 4540 T39/7310 T34 Winter 2020
 
-This is the repository for PSYC 4540 T39/7310 T34, a course on Open and Collaborative Science in the Psychology Department at the University of Manitoba, Winter 2020 (Instructor: Dr. Melanie Soderstrom). During the course, there will be a class-wide group research project where Open and Collaborative Science tools and principles will be applied.The objective will be a fully open and pre-registered project that will be submitted for (possible peer review and) publication.
+This is the repository for PSYC 4540 T39/7310 T34, a course on Open and Collaborative Science in the Psychology Department at the University of Manitoba, Winter 2020 (Instructor: Dr. Melanie Soderstrom). During the course, there was a class-wide group research project where Open and Collaborative Science tools and principles were applied.The objective was a fully open and pre-registered project that will be submitted for (possible peer review and) publication.
 
 ## The Project
 
 ### What can we perceive in infant babble?
 
-The purpose of this study is to determine whether or not English-speaking monolingual adults can identify the age, sex, or first language of a baby after listening to recorded snippets ofbaby babble. The study will also determine if the adults’ gender or caregiving experience affect their abilities to discriminate between the babble. Finally, the study will compare results from the SONA Participant Pool and results collected from mTurk participants.
+The purpose of this study is to determine whether or not English-speaking monolingual adults can identify the age, sex, or first language of a baby after listening to recorded snippets of baby babble. The study will also determine if the adults’ gender or caregiving experience affect their abilities to discriminate between the babble.
 
 This research is valuable in that it lends to the study of human language development. There have been mixed results so far on whether humans can identify differences in baby babble based on a baby’s first language and age. Furthermore, there appears to be no literature on adult participants identifying differences in babble based on the sex of the baby, although there is evidence that sex hormones are linked to language development in babies as young as 5-months (Quast et al., 2016). Our research will contribute to these growing bodies of literature.
 
@@ -29,7 +29,7 @@ This repository will be used to store all of the code and data for this project.
 
 The experiment can be viewed at https://melsod.github.io/OCSWinter2020/
 
-The experiment is run using [jsPsych](https://www.jspsych.org/) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis).
+The experiment is run using [jsPsych](https://www.jspsych.org/) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis) (more details below).
 
 Our selection of Babble Clips used in the experiment is found in the [Selected Audio Files Folder](audio/selected_audio_files). The clips found in the two folders were selected by an [R Script](R/pre_experiment/sample_clips.R). Three of the contributers then manually screened the clips for usability (e.g., non-infant noises). A copy of the excluded files are found [here](audio/Exclusion_files). Following the screening process, another [R Script](R/pre_experiment/narrow_sample.R) generated the list of files that were presented in the experiment (a copy of these files are found [here](audio/selected_audio_files/clips_to_use)).
 
