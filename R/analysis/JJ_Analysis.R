@@ -56,7 +56,35 @@ for(i in 1:length(unique(data$subject))){
   survey_data <- sapply(survey_data, fromJSON)
   subject<-sub_data$subject[1]
   childcare<-as.numeric(extract_json("Childcare", survey_data))
+  #if(is.na(childcare)==TRUE){as.numeric(strsplit(extract_json("Childcare", survey_data),split = " ")[[1]][1])} # subject typed "XX months" this with catch that
+  if(is.na(childcare)==TRUE){
+    childcare_txt<-strsplit(extract_json("Childcare", survey_data),split = " ")
+    if(length(childcare_txt[[1]])==1){
+      childcare_txt<-strsplit(extract_json("Childcare", survey_data),split = "-")
+      childcare<-mean(c(childcare_txt[[1]][1],childcare_txt[[1]][-1]))
+    }else{
+      if(tolower(substring(text = childcare_txt[[1]][2],first = 1,last = 1))=="y"){
+        childcare<-(12)*as.numeric(childcare_txt)[[1]][1]
+      }else{
+        childcare<-as.numeric(childcare_txt)[[1]][1]
+      }
+    }
+  }
   caregiver<-as.numeric(extract_json("Caregiver", survey_data))
+  if(is.na(caregiver)==TRUE){
+    caregiver_txt<-strsplit(extract_json("Caregiver", survey_data),split = " ")
+    if(length(caregiver_txt[[1]])==1){
+      caregiver_txt<-strsplit(extract_json("Caregiver", survey_data),split = "-")
+      caregiver<-mean(c(caregiver_txt[[1]][1],caregiver_txt[[1]][-1]))
+    }else{
+      if(tolower(substring(text = caregiver_txt[[1]][2],first = 1,last = 1))=="y"){
+        caregiver<-(12)*as.numeric(caregiver_txt)[[1]][1]
+      }else{
+        caregiver<-as.numeric(caregiver_txt)[[1]][1]
+      }
+    }
+  }
+  if(is.na(caregiver)==TRUE){as.numeric(strsplit(extract_json("Caregiver", survey_data),split = " ")[[1]][1])}
   par_age<-as.numeric(extract_json("Par_Age", survey_data))
   par_gen<-as.character(extract_json("Gender_Q", survey_data)[[1]])
   par_gen_other<-as.character(extract_json("Gender_Q", survey_data)[[2]])
@@ -88,12 +116,17 @@ for(i in 1:length(unique(data$subject))){
     }
   }
   #tidy_data[i, ] <- extract_subject_data(data[data$subject == unique(data$subject)[i], ])
-  print(count)
+  #print(count)
 }
 
 colnames(tidy_data) <- c("subject_ID", "correct", "phase", "time_ellapsed_mins", "childcare", "caregiver", 
                          "age", "gender", "gender_text", "country", "country_text", "hearing", 
                          "eng_first", "know_corp_lang", "monolingual")
+
+
+library(readr)
+cleaned_subject_data <- read_csv("data/cleaned_subject_data.csv")
+tidy_data<-subset(tidy_data,tidy_data$subject_ID%in%cleaned_subject_data$subject)
 
 
 #································Follow Up Analysis ··············································
