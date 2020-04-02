@@ -6,13 +6,17 @@ output:
 ---
 
 ```{r setup, include=FALSE}
+
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
 First, we will read in the data:
 
-```{r}
-d <- read.csv("cleaned_data.csv")
+```{r, warning=F, message=F}
+#install.packages("here") # BCS changed
+library(here)
+d <- read.csv(here("data","cleaned_data.csv"))
+d_save<-d
 ```
 
 <br>
@@ -66,8 +70,11 @@ The x axis is the number of times a participant required to complete the attenti
 We can remove participants based on that criteria:
 
 ```{r}
+n_rem<-sum(d_save$n_attention_checks >5) #BCS added
 d <- d[d$n_attention_checks <= 5, ]
 ```
+
+From this we can see that `r n_rem` participants were removed based on the above criteria.
 
 <br>
 
@@ -96,14 +103,46 @@ ggplot(d, aes(know_corp_lang)) + geom_bar() +
 We'll get rid of participants who specify a gender other than female or male, reside in a country other than Canada or the US, do not have English as a first language, have significant familiarity with the languages from Babble Cor other than English, or responded with the same response for any of the sex, language, or age question blocks:
 
 ```{r}
+gen_exclude<-length(d_save$gender)-sum(d_save$gender %in% c("Female", "Male")) #BCS added
+coun_exclude<-length(d_save$country)-sum(d_save$country %in% c("Canada", "USA"))
+eng_exclude<-length(d_save$eng_first)-sum(d_save$eng_first=="Yes")
+know_corp_exclude<-length(d_save$know_corp_lang)-sum(d_save$know_corp_lang=="None")
+same_resp_exclude<-length(d_save$var_sex)-sum(d_save$var_sex>0 & d_save$var_lang>0 & d_save$var_age>0 )
+
 d <- d[d$gender %in% c("Female", "Male"), ]
 d <- d[d$country %in% c("Canada", "USA"), ]
 d <- d[d$eng_first == "Yes", ]
 d <- d[d$know_corp_lang == "None", ]
-d <- d[d$var_sex > 0 | d$var_lang > 0 | d$var_age > 0, ]
+d <- d[d$var_sex > 0 & d$var_lang > 0 & d$var_age > 0, ] # BCS: changed | symbol to & symbol
 ```
 
-The data now contains `r nrow(d)` observations. With the cleaning out of the way, let's now have a look to see whether the data supports our hypotheses.
+Number excluded based on: 
+
+- gender: `r gen_exclude`
+- country: `r coun_exclude`
+- English as a first language: `r eng_exclude`
+- knowing some of the corpus languages: `r know_corp_exclude`
+- giving the same response for all questions in a block: `r same_resp_exclude`
+
+The data now contains `r nrow(d)` observations. 
+
+```{r}
+# BCS added to get demographic info for final sample
+library(plyr)
+count(d, 'gender')
+count(d, 'gender_text')
+count(d, 'country')
+count(d, 'country_text')
+count(d, 'hearing') # no exclusion based on this?
+count(d, 'eng_first')
+count(d, 'know_corp_lang')
+count(d, 'monolingual') # no exlusion based on this?
+library(psych)
+describe(d)
+
+```
+
+With the cleaning out of the way, let's now have a look to see whether the data supports our hypotheses.
 
 <br>
 
