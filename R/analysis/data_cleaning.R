@@ -37,6 +37,7 @@ extract_subject_data <- function(d){
                as.character(paste0(extract_json("Know_corp_lang", survey_data))),
                as.character(extract_json("monolingual", survey_data)),
                as.numeric(sum(d$phase == "Attention_Check", na.rm=TRUE)),
+               as.numeric(sum(d$phase == "audio_check", na.rm=TRUE)),
                as.numeric(var(d$button_pressed[d$phase == "Sex"] , na.rm=TRUE)),
                as.numeric(var(d$button_pressed[d$phase == "Language"] , na.rm=TRUE)),
                as.numeric(var(d$button_pressed[d$phase == "Age"] , na.rm=TRUE)),
@@ -44,7 +45,7 @@ extract_subject_data <- function(d){
     
 }
 
-tidy_data <- data.frame(matrix(0, length(unique(data$subject)), 22))
+tidy_data <- data.frame(matrix(0, length(unique(data$subject)), 23))
 
 for(i in 1:length(unique(data$subject))){
     tidy_data[i, ] <- extract_subject_data(data[data$subject == unique(data$subject)[i], ])
@@ -53,7 +54,7 @@ for(i in 1:length(unique(data$subject))){
 # BCS add some time measures
 colnames(tidy_data) <- c("subject_ID", "p_cor_sex", "p_cor_lang", "p_cor_age", "time_mins","fin_consent_mins","consent_to_fin_mins", "childcare", "caregiver", 
                          "age", "gender", "gender_text", "country", "country_text", "hearing", 
-                         "eng_first", "know_corp_lang", "monolingual", "n_attention_checks",
+                         "eng_first", "know_corp_lang", "monolingual", "n_attention_checks", "n_audio_checks",
                          "var_sex", "var_lang", "var_age")
 
 tidy_data$know_corp_lang[tidy_data$know_corp_lang == "list()"] <- "None"

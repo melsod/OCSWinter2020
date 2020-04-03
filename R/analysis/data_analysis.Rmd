@@ -35,7 +35,9 @@ Most of these variables (columns) are self-explanatory. However, for completenes
 + **p_cor_sex**: The proportion correct responses for the sex question
 + **p_cor_lang**: The proportion correct responses for the language question
 + **p_cor_age**: The proportion correct responses for the age question
-+ **time_mins**: the length of time participants took to complete the study in minutes
++ **time_mins**: The length of time participants took to complete the study in minutes
++ **fin_consent_mins**: The length of time participants took to complete the consent form
++ **consent_to_fin_mins**: The length of time the participants took to complete the survey (excluding the consent form)
 + **childcare**: the amount of childcare experience the participant has in months
 + **childcare**: the amount of caregiver experience the participant has in months
 + **age**: the age of the participant in years
@@ -48,6 +50,7 @@ Most of these variables (columns) are self-explanatory. However, for completenes
 + **know_corp_lang**: if the participant knows any of the languages in the corpus other than English
 + **monolingual**: if the participant is monolingual
 + **n_attention_checks**: the number of times the participant needed to successfully complete the attention check
++ ***n_audio_checks*: the number of times the participant needed to successfully complete the audio check
 + **var_sex**: The participant's variance of responses for the sex question. A score of 0 indicates the participant responded identically for all questions in the sex block
 + **var_lang**: The participant's variance of responses for the language question. A score of 0 indicates the participant responded identically for all questions in the language block
 + **var_age**: The participant's variance of responses for the age question. A score of 0 indicates the participant responded identically for all questions in the age block
