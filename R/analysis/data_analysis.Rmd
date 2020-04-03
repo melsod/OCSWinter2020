@@ -38,6 +38,7 @@ Most of these variables (columns) are self-explanatory. However, for completenes
 + **time_mins**: The length of time participants took to complete the study in minutes
 + **fin_consent_mins**: The length of time participants took to complete the consent form
 + **consent_to_fin_mins**: The length of time the participants took to complete the survey (excluding the consent form)
++ **max_RT_exp_trials**: The longest RT during the main experimental trials
 + **childcare**: the amount of childcare experience the participant has in months
 + **childcare**: the amount of caregiver experience the participant has in months
 + **age**: the age of the participant in years
@@ -50,7 +51,7 @@ Most of these variables (columns) are self-explanatory. However, for completenes
 + **know_corp_lang**: if the participant knows any of the languages in the corpus other than English
 + **monolingual**: if the participant is monolingual
 + **n_attention_checks**: the number of times the participant needed to successfully complete the attention check
-+ ***n_audio_checks*: the number of times the participant needed to successfully complete the audio check
++ **n_audio_checks**: the number of times the participant needed to successfully complete the audio check
 + **var_sex**: The participant's variance of responses for the sex question. A score of 0 indicates the participant responded identically for all questions in the sex block
 + **var_lang**: The participant's variance of responses for the language question. A score of 0 indicates the participant responded identically for all questions in the language block
 + **var_age**: The participant's variance of responses for the age question. A score of 0 indicates the participant responded identically for all questions in the age block
@@ -73,11 +74,33 @@ The x axis is the number of times a participant required to complete the attenti
 We can remove participants based on that criteria:
 
 ```{r}
-n_rem<-sum(d_save$n_attention_checks >5) #BCS added
+atten_exclude<-sum(d_save$n_attention_checks >5) #BCS added
 d <- d[d$n_attention_checks <= 5, ]
 ```
 
-From this we can see that `r n_rem` participants were removed based on the above criteria.
+From this we can see that `r atten_exclude` participants were removed based on the attention check.
+
+<br>
+
+First we can look at the distribution of number of attention checks required for each participant:
+
+```{r message=FALSE}
+library(ggplot2)
+ggplot(d, aes(n_audio_checks)) + geom_histogram() +
+    geom_vline(xintercept = 5, linetype = "solid",  color = "darkgrey", size = 1.5)
+    
+```
+
+The x axis is the number of times a participant required to complete the audio check. The y axis shows he counts of those attempts. The grey line is the exlusion criteria we pre-determrined (i.e., eclude any participant who needs more than 5 attempts).
+
+We can remove participants based on that criteria:
+
+```{r}
+audio_exclude<-sum(d_save$n_audio_checks >5) #BCS added
+d <- d[d$n_audio_checks <= 5, ]
+```
+
+From this we can see that `r audio_exclude` participants were removed based on the audio check.
 
 <br>
 
