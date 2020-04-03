@@ -15,7 +15,7 @@ First, we will read in the data:
 ```{r, warning=F, message=F}
 #install.packages("here") # BCS changed
 library(here)
-d <- read.csv(here("data","cleaned_data.csv"))
+d <- read.csv(here("data","summarized_data.csv"))
 d_save<-d
 ```
 
