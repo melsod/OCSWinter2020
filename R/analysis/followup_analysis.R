@@ -1,7 +1,24 @@
+#······································································································
 #································Get Trial-by-Trial Data ··············································
+#······································································································
+###### Unless you want to recompute the dataframe skip to Eliminate excluded participants section
+
+
 
 #install.packages("jsonlite")
 library("jsonlite")
+
+flag<-FALSE
+# *************************************************************************************************************
+# ********** Users unfamiliar with Git LFS may have difficulty getting/using the final_data.json file *********
+# ********** So the code that relies on this file is skipped by default, change the flag paramter to  *********
+# ********** TRUE if you have the final_data.json file and want to recompute the dataframe. The       *********
+# ********** tidied dataframe should be saved as trial_data.csv in the dataframe already so           *********
+# ********** recomputing the data should be unnecessary (leave flag as false)                         *********
+# *************************************************************************************************************
+
+# SKIP THE FOLLOWING CODE BY DEFAULT
+if(flag==TRUE){
 
 # pull in data (should work assuming you have cloned the GitHub Repo)
 data <- unlist(jsonlite::fromJSON("./data/final_data.json"), recursive = FALSE, use.names = TRUE)
@@ -136,19 +153,63 @@ for(i in 1:length(unique(data$subject))){
 colnames(tidy_data) <- c("subject_ID", "correct", "phase", "time_ellapsed_mins", "childcare", "caregiver", 
                          "age", "gender", "gender_text", "country", "country_text", "hearing", 
                          "eng_first", "know_corp_lang", "monolingual")
+}
+# END DEFAULT SKIPPING CODE
+
+#··············································································································
+#································Save trial by trail data as csv ··············································
+#··············································································································
 
 
+
+# *************************************************************************************************************
+#************** If you have successfully run the above code then you can save the dataframe for later *********
+#write.csv(tidy_data, "./data/trial_data.csv", row.names = FALSE) ####### uncomment this line to run it
+# *************************************************************************************************************
+
+
+
+#··············································································································
 #································Eliminate excluded participants ··············································
+#··············································································································
+###### REQUIRES w_exclusions_summarized_data.csv file. If not found then run data_cleaning.R to create the file
+
+
 
 #install.packages("readr")
 library(readr)
-# get datafile that includes participant exclusions (created by data_cleaning.R)
-w_exclusions_data <- read_csv("data/w_exclusions_data.csv")
+
+# *************************************************************************************************************
+#************** If you have a previously saved trial_data.csv then this is quicker**************
+tidy_data <- read_csv("data/trial_data.csv") 
+#**************************************************************************************************************
+
+
+# get summarized datafile that includes participant exclusions (created by data_cleaning.R)
+w_exclusions_data <- read_csv("data/w_exclusions_summarized_data.csv")
 # only include the data from participants who pass exclusion criteria
 tidy_data<-subset(tidy_data,tidy_data$subject_ID %in% w_exclusions_data$subject_ID)
 
 
-#································Follow Up Analysis ··············································
+
+#··············································································································
+#································Save trial by trail data as csv w exclusions ·································
+#··············································································································
+
+
+
+# uncomment if you want to resave the trial-by-trial data with the appropriate participants excluded
+# it should be already be found in the data folder of the repository
+#write.csv(tidy_data, "./data/w_exclusions_trial_data.csv", row.names = FALSE)
+
+
+
+#··············································································································
+#································Follow Up Analysis ···························································
+#··············································································································
+
+
+
 # identify infant age
 
 # Random intercept Model: Baseline

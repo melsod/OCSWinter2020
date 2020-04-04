@@ -1,3 +1,10 @@
+# sampled with Rstudio 1.2.5019
+#              R 3.6.1 (2019-07-05)
+
+# Will need the private_metadata.csv file from BabbleCor: https://osf.io/rz4tx/
+# by contacting the authours and submitting the data usage agreement
+# put the file in your project folder but DO NOT share publicly on github
+
 # install.packages("tidyverse")
 library(tidyverse)
 

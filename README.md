@@ -37,7 +37,7 @@ The easiest way to reproduce these results is to fork this repository into your 
 
 #### Sign-Up For a GitHub Account
 
-If you alread have a GitHub Account then skip to [Fork the Repository](#fork-the-repository), otherwise:
+If you already have a GitHub Account then skip to [Fork the Repository](#fork-the-repository), otherwise:
 
 - Go to www.github.com
 - Click the "Sign Up" button in the top right hand side of the site (or click [here](https://github.com/join?source=header-home))
@@ -71,7 +71,7 @@ If you already have the GitHub Desktop Client then skip to [Clone the Repository
 - Make a folder on your computer where you would like to save the repository
 - In the GitHub Desktop program, click on the File menu (in the top, left hand corner)
 - Click on Clone Repository
-- Select the "GitHub.com" tab if it is not aleady selected
+- Select the "GitHub.com" tab if it is not already selected
 - Your repositories should be visible assuming that you successfully signed into GitHub on the Desktop Client
 - Select the GitHubUsername/OCSWinter2020 option
 - Choose the local path where you want to save the repository (just below the repository options)
@@ -80,7 +80,7 @@ If you already have the GitHub Desktop Client then skip to [Clone the Repository
 
 ### Reproducibility
 
-Now that you have a local copy of the experiment on your machine you can begin to make and save your own edits. These edits can be saved, committed to your git repository (version control: essentially it keeps a record of all the changes you make and allows you to revert to a previous itteration of the experiment if you want), and then pushed to your GitHub repository. Once changes are on your GitHub repository others can see your work and contribute to it and you can host the experiment there (using GitHub Pages). 
+Now that you have a local copy of the experiment on your machine you can begin to make and save your own edits. These edits can be saved, committed to your git repository (version control: essentially it keeps a record of all the changes you make and allows you to revert to a previous iteration of the experiment if you want), and then pushed to your GitHub repository. Once changes are on your GitHub repository others can see your work and contribute to it and you can host the experiment there (using GitHub Pages). 
 
 We'll leave it to you to learn how to push changes to your GitHub repository and work collaboratively with others from there (it's much the same way you are "working" on our experiment) but we will show you how to how the experiment in the section [Running the Experiment](#running-the-experiment).
 
@@ -88,11 +88,39 @@ We'll leave it to you to learn how to push changes to your GitHub repository and
 
 If you already have R and rStudio then skip to [Reproduce the Experiment](#reproduce-the-experiment)
 
+- Download the latest stable version of R (https://www.r-project.org/)
+- Download the latest stable version of rStudio (https://rstudio.com/products/rstudio/download/)
+
 #### Reproduce the Experiment
 
-In your local repository (the folder that you downloaded/clones the repo to)
+- In your local repository (the folder that you downloaded/clones the repo to), open OCSWinter2020.Rproj with rStudio. This will open rStudio project for the experiment. What that means is that it sets a working directory so that any file calls will be in reference to this file. If you work on a different task (other than related to this experiment) then you should create a new R project by using the drop down menu in the top right hand of the rStudio window.
+- Then in the bottom right panel of the rStudio screen select the files tab
+- Select the index.html file, and "Open in Editor"
+- This is the experiment file. It is written in JavaScript and HTML using the jsPsych library (found in the jspsych-6-2 folder in the repository). Hopefully it is documented well enough for you to follow.
+- If you open the index.html file in your web browser or with the rStudio Preview button it should open. Unfortunately, due to permissions settings you will probably be unable to run through the experiment on your web browser, and some features of the experiment may not work in the rStudio preview. There are ways around these problems to test the experiment (commenting out lines of code pointed out in the index.html file) but it will all work when hosted online
+- Audio for the experiment is found in the [audio folder](audio) of the repository
+- Consent and debreifing form HTML code for the experiment is found in the [forms folder](forms)
+- Images for the experiment are foudn in the [img folder](img)
+- Almost all of the text that appears in the experiment is found in the [stimuli folder](stimuli) in the [exp_text.js file](stimuli/exp_text.js)
+- The original sample of audio clips were selected using the [R/pre_experiment/sample_clips_2.r](R/pre_experiment/sample_clips_2.r) file but it is suggested to use [R/pre_experiment/sample_clips.r](R/pre_experiment/sample_clips.r) because it has been adapted to work better with the repositories organizational structure
+- After being manually screened by 3 of the contributers (the files they decided to exclude can be found at [audio/Exclusion_files](audio/Exclusion_files) and [R/pre_experiment/files_to_exclude.RData](R/pre_experiment/files_to_exclude.RData)) the final selection of clips was done using the [R/pre_experiment/narrow_sample.R](R/pre_experiment/narrow_sample.R) file
+- The stimuli that are presented to the participants were also created with the [R/pre_experiment/narrow_sample.R](R/pre_experiment/narrow_sample.R) file and are found in [stimuli/age_language_test_stimuli.js](stimuli/age_language_test_stimuli.js) and [stimuli/sex_test_stimuli.js](stimuli/sex_test_stimuli.js)
 
 #### Reproduce the Results
+
+- All data collected were temporarially stored on a Google Firebase server
+- They were then downloaded using the [R/analysis/pull_firedata.R](R/analysis/pull_firedata.R) file
+- The downloaded data is stored in the [data](data) folder
+- Files in the [data](data) folder:
+  - [short_exp_test_data](data/short_exp_test_data.json) Data from contributers while proofing the experimental procedure. Only includes 1 trial in each block. Used to quickly test the experiment for obvious errors and remote database collection.
+  - [private_pilot_test_data](data/private_pilot_test_data.json) Data from contributers for testing a more finalized version of the task. Used to test whether we were collecting all the relevant data for our analysis
+  - [3_participant_pilot_data](data/3_participant_pilot_data.json) and [2_additional_part_pilot_data](data/2_additional_part_pilot_data.json) Data from a pilot test of 6 "real" participants (3 at a time). Data was used to confirm that automatic creditting for the online system worked. Only includes 5 data points because 1 participants declined to participate at the consent phase. Data is not included in the final sample.
+  - [final_data](data/final_data.json) The final data collected from 626 participants. File size is 105.5 MB so uses Git LFS in order to be uploaded to GitHub. May cause problems for novice users.
+  - [summarized_data](data/summarized_data.csv) A .csv file containing a single line for all 626 participants summarizing their performance and suvery responses.
+  - [w_exclusions](data/w_exclusions.csv) A .csv file containing a single line for all 460 participants who were not excluded, summarizing their performance and suvery responses.
+  - [trial_data.csv](data/trial_data.csv) A .csv file containing a single line per trial for all 626 participants. Each line containes the participant's survey responses
+  - [w_exclusions_trial_data.csv](data/w_exclusions_trial_data.csv) A .csv file containing a single line per trial for all 460 participants who were not excluded. Each line containes the participant's survey responses
+  
 
 ### Running the Experiment
 

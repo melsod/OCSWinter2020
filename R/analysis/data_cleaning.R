@@ -81,4 +81,4 @@ w_exclusions_data <- w_exclusions_data[w_exclusions_data$know_corp_lang == "None
 w_exclusions_data <- w_exclusions_data[w_exclusions_data$var_sex > 0 & w_exclusions_data$var_lang > 0 & w_exclusions_data$var_age > 0, ] # remove those who only chose 1 response for a full block of trials
 
 # write csv file for the summarized data including exclusions
-write.csv(w_exclusions_data, "./data/w_exclusions_data.csv", row.names = FALSE)
+write.csv(w_exclusions_data, "./data/w_exclusions_summarized_data.csv", row.names = FALSE)
