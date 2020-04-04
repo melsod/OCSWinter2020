@@ -10,7 +10,7 @@ The purpose of this study is to determine whether or not English-speaking monoli
 
 This research is valuable in that it lends to the study of human language development. There have been mixed results so far on whether humans can identify differences in baby babble based on a baby’s first language and age. Furthermore, there appears to be no literature on adult participants identifying differences in babble based on the sex of the baby, although there is evidence that sex hormones are linked to language development in babies as young as 5-months (Quast et al., 2016). Our research will contribute to these growing bodies of literature.
 
-### Our procedure
+### Our Procedure
 
 In this experiment, adult participants heared a series of short audio clips of babble, in batches of 10. Participants were asked a question about each clip. Their task was to answer the questions based on their best judgement. All answers were be collected by a computer. At the end of the study, some information was asked about the participant and their experience with infants.
 
