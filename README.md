@@ -12,7 +12,15 @@ This research is valuable in that it lends to the study of human language develo
 
 ### Our procedure
 
-In this experiment, adult participants will hear a series of short audio clips of babble, one at a time or in batches of 10. Participants will be asked a question about each clip. Their task will be to answer the questions based on their best judgement. All answers will be collected by a computer. At the end of the study, some information will be asked about the participant and their experience with infants.
+In this experiment, adult participants heared a series of short audio clips of babble, in batches of 10. Participants were asked a question about each clip. Their task was to answer the questions based on their best judgement. All answers were be collected by a computer. At the end of the study, some information was asked about the participant and their experience with infants.
+
+### Our Results
+
+We found that participants were able to perform better than chance at judging a baby's age, and language that it was learning. Participants also misjudged a baby's sex more often than they were correct. We did not find that cargiving experience, childcare experience, or gender played a factor in peoples' accuracy when judging either the baby's age or language that it was learning.
+
+# Contributors
+
+Alanna Beyak, Olivia Cadieux, Matthew Cook, Carly Cressman, Barbie Jain, Jarod Joshi, Spenser Martin, Michael Mielniczek, Sara Montazeri, Essence Perera, Jolyn Sawatzky, Bradley Smith, Jackie Spear, Thomas Thompson, Derek Trudel, Jianjie Zeng, Melanie Soderstrom
 
 # Getting Started
 
@@ -205,14 +213,6 @@ Our university uses the SONA system to credit participants with course credit. S
 - So long as you include the code in the [index.html](index.html) tagged with "#SONA" then it should automatically grant credit at the completion of the experiment
 - You will also need to put the client-side_URL into the debriefing form for those participants who decline to participate during the consent phase of the experiment
 
-# Contributors
-
-Alanna Beyak, Olivia Cadieux, Matthew Cook, Carly Cressman, Barbie Jain, Jarod Joshi, Spenser Martin, Michael Mielniczek, Sara Montazeri, Essence Perera, Jolyn Sawatzky, Bradley Smith, Jackie Spear, Thomas Thompson, Derek Trudel, Jianjie Zeng, Melanie Soderstrom
-
 # Acknowledgements 
 
-Thank you to Cychosz et al. for providing the BabbleCor dataset. 
-
-# Other
-
-BabbleCor: https://osf.io/rz4tx/
+Thank you to Cychosz et al. for providing the BabbleCor dataset (BabbleCor: https://osf.io/rz4tx/). 
