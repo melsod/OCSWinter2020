@@ -32,7 +32,7 @@ This repository will be used to store all of the code and data for this project.
 
 The actual experiment can be viewed/tested at https://melsod.github.io/OCSWinter2020/
 
-The experiment is run using [jsPsych](https://www.jspsych.org/) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis) (detailed steps below).
+The experiment is run using [jsPsych](https://www.jspsych.org/) (a JavaScript library for running behavioural experiments in a web browser) and is hosted on GitHub Pages. Data was collected by Google Firebase before being consolidated and saved into our [data folder](data). Our data analysis can be reproduced using the code found in our [analysis folder](R/analysis) (detailed steps [below](#reproduce-the-results)).
 
 Our selection of Babble Clips used in the experiment is found in the [Selected Audio Files Folder](audio/selected_audio_files). The clips found in the two folders were selected by an [R Script](R/pre_experiment/sample_clips.R). Three of the contributors then manually screened the clips for usability (e.g., non-infant noises). A copy of the excluded files are found [here](audio/Exclusion_files). Following the screening process, another [R Script](R/pre_experiment/narrow_sample.R) generated the list of files that were presented in the experiment (a copy of these files are found [here](audio/selected_audio_files/clips_to_use)).
 
@@ -63,7 +63,7 @@ If you already have a GitHub Account then skip to [Fork the Repository](#fork-th
 - Go to https://github.com/melsod/OCSWinter2020 (but you're already here)
 - Click on the "Fork" button near the top, right hand side of the page
 - Wait for the repository to complete it's fork
-- You now own you're very own copy of this repository!
+- You now own your very own copy of this repository!
 
 #### Download GitHub Desktop
 
@@ -90,7 +90,7 @@ If you already have the GitHub Desktop Client then skip to [Clone the Repository
 
 ### Reproducibility
 
-Now that you have a local copy of the experiment on your machine you can begin to make and save your own edits. These edits can be saved, committed to your git repository (version control: essentially it keeps a record of all the changes you make and allows you to revert to a previous iteration of the experiment if you want), and then pushed to your GitHub repository. Once changes are on your GitHub repository others can see your work and contribute to it and you can host the experiment there (using GitHub Pages). 
+Now that you have a local copy of the experiment on your machine you can begin to make and save your own edits. These edits can be saved, committed to your git repository (version control: essentially it keeps a record of all the changes you make and allows you to revert to a previous iteration of the experiment if you want), and then pushed to your GitHub repository (think of "pushing" as saving your edits to the "cloud"). Once changes are on your GitHub repository others can see your work and contribute to it. You can also host the experiment there (using GitHub Pages, this will be explained  in [Hosting the Experiment](#hosting-the-experiment)).
 
 We'll leave it to you to learn how to push changes to your GitHub repository and work collaboratively with others from there (it's much the same way you are "working" on our experiment) but we will show you how to host the experiment in the section [Running the Experiment](#running-the-experiment).
 
@@ -203,14 +203,16 @@ The rest of the references to firebase should be explained well enough in the co
 #### Crediting SONA Participants
 
 Our university uses the SONA system to credit participants with course credit. SONA allows online experiments and automatic crediting for those experiments. To do this:
-- Set up a SONA online experiment 
-- Set the SONA Study URL to your experiments URL + "?id=%SURVEY_CODE%". For example, https://YourGitHubUsername.github.io/OCSWinter2020/?id=%SURVEY_CODE%
+- Set up a SONA online experiment
+- Go to your SONA experiment's "Change Study Information" page
+- Set the SONA Study URL to your experiments URL with "?id=%SURVEY_CODE%" added onto the end of the URL (without the quotation marks). For example, you might set the Study URL to: https://YourGitHubUsername.github.io/OCSWinter2020/?id=%SURVEY_CODE%
 - Then go back to the Study Information page and find the "Completion URLs:"
 - Copy the client-side CompletionURL, this will be important to include as a redirect at the end of your study
 - There is then some important code to include in the [index.html](index.html) file (including the client-side URL) in order to automatically grant the participants credit. These will be tagged with "#SONA" so that they are easier to find. The most vital one will look something like this:
   - window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=XXXX&credit_token=11X11X111X1X1X1XX1X11111111XX11X&survey_code="+SONA_ID;
-  - This code is window.location.href = client-side_URL except replacing the end of the client-side_URL (looks like this survey_code=XXXX) with survey_code="+SONA_ID;
-- So long as you include the code in the [index.html](index.html) tagged with "#SONA" then it should automatically grant credit at the completion of the experiment
+  - This code uses the client-side_URL that you have copied from your SONA experiment page, except that you need to replace the end of the client-side_URL (the end looks like this: survey_code=XXXX) with this code: survey_code="+SONA_ID
+  - You are replacing the default XXXX at the end of the code with +SONA_ID because SONA_ID is a variable that contains the correct information so that participants can be granted their credit
+- So long as you include the code in the [index.html](index.html) tagged with "#SONA", and change the client-side URL to the one provided by your study, then it should automatically grant credit at the completion of the experiment
 - You will also need to put the client-side_URL into the debriefing form for those participants who decline to participate during the consent phase of the experiment
 
 # Acknowledgements 
