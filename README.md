@@ -97,12 +97,12 @@ If you already have R and rStudio then skip to [Reproduce the Experiment](#repro
 
 - In your local repository (the folder that you downloaded/clones the repo to), open OCSWinter2020.Rproj with rStudio. This will open rStudio project for the experiment. What that means is that it sets a working directory so that any file calls will be in reference to this file. If you work on a different task (other than related to this experiment) then you should create a new R project by using the drop down menu in the top right hand of the rStudio window.
 - Then in the bottom right panel of the rStudio screen select the files tab
-- Select the index.html file, and "Open in Editor"
-- This is the experiment file. It is written in JavaScript and HTML using the jsPsych library (found in the jspsych-6-2 folder in the repository). Hopefully it is documented well enough for you to follow.
-- If you open the index.html file in your web browser or with the rStudio Preview button it should open. Unfortunately, due to permissions settings you will probably be unable to run through the experiment on your web browser, and some features of the experiment may not work in the rStudio preview. There are ways around these problems to test the experiment (commenting out lines of code pointed out in the index.html file) but it will all work when hosted online
+- Select the [index.html](index.html) file, and "Open in Editor"
+- This is the experiment file. It is written in JavaScript and HTML using the jsPsych library (found in the jspsych-6-2 folder in the repository). Hopefully it is documented well enough for you to follow. We'll leave it to you to learn jsPsych if you want to adapt the experiment for your own purposes.
+- If you open the [index.html](index.html) file in your web browser or with the rStudio Preview button it should open. Unfortunately, due to permissions settings you will probably be unable to run through the experiment on your web browser, and some features of the experiment may not work in the rStudio preview. There are ways around these problems to test the experiment (commenting out lines of code pointed out in the [index.html](index.html) file) but it will all work when hosted online
 - Audio for the experiment is found in the [audio folder](audio) of the repository
 - Consent and debreifing form HTML code for the experiment is found in the [forms folder](forms)
-- Images for the experiment are foudn in the [img folder](img)
+- Images for the experiment are found in the [img folder](img)
 - Almost all of the text that appears in the experiment is found in the [stimuli folder](stimuli) in the [exp_text.js file](stimuli/exp_text.js)
 - The original sample of audio clips were selected using the [R/pre_experiment/sample_clips_2.r](R/pre_experiment/sample_clips_2.r) file but it is suggested to use [R/pre_experiment/sample_clips.r](R/pre_experiment/sample_clips.r) because it has been adapted to work better with the repositories organizational structure
 - After being manually screened by 3 of the contributers (the files they decided to exclude can be found at [audio/Exclusion_files](audio/Exclusion_files) and [R/pre_experiment/files_to_exclude.RData](R/pre_experiment/files_to_exclude.RData)) the final selection of clips was done using the [R/pre_experiment/narrow_sample.R](R/pre_experiment/narrow_sample.R) file
@@ -176,19 +176,33 @@ Unfortunately GitHub pages is only for static websites so we can't directly save
     messagingSenderId: &quot;stuff here &quot;,
     appId: &quot;stuff here &quot;
 </code></pre>
-<script type="text/javascript">
-var firebaseConfig = {
-    apiKey: " stuff here",
-    authDomain: "stuff here ",
-    databaseURL: "stuff here ",
-    projectId: "stuff here ",
-    storageBucket: "",
-    messagingSenderId: "stuff here ",
-    appId: "stuff here "
+- Copy this portion of the code, go to the [index.html](index.html) file in your local repository, scroll down until you find similar code (about line 70), and replace our Firebase configuration with yours.
+- You may notice that we have included 3 lines of source code rather than Firebase's 1 in the code that they provide you. All hree of these are needed for our procedure. Do not delete or overwrite them. You may update the version number (e.g., from 6.3.4 to 7.13.2) but this is probably not needed.
+- Now go back to your Browser and "Continue to console" (Go back to "Project settings")
+- In the left hand menu, under Develop, select "Authentication"
+- Select "Sign-in method" or "Set up sign-in method"
+- Select "Anonymous" and change the settings so that it is enabled and save
 
-</script>
+- Your database is now fully set up and ready to accept anonymous data however to remotely pull off the data we will need to find your "secret key"
+  - Go back to your "Project settings"
+  - Go to the "Service accounts" tabs
+  - Click on "Database secrets"
+  - Under your projects database, click to show the secret key. Copy and paste this somewhere you can use it later. The only place you'll probably use it is in the [R/analysis/pull_firedata.R](R/analysis/pull_firedata.R) file to pull off the data. You will also need your projectURL (found in the code provided by firebase).
+
+The rest of the references to firebase should be explained well enough in the comments of the [index.html](index.html) file. To more easily find this code I have tagged those lines with "#FIREBASE". Now when someone finishes the experiment thier data should be saved to your Firebase realtime database.
 
 #### Crediting SONA Participants
+
+Our university uses the SONA system to credit participants with course credit. SONA allows online experiments and automatic crediting for those experiments. To do this:
+- Set up a SONA online experiment 
+- Set the SONA Study URL to your experiments URL + "?id=%SURVEY_CODE%". For example, https://GitHubUsername.github.io/OCSWinter2020/?id=%SURVEY_CODE%
+- Then go back to the Study Information page and find the "Completion URLs:"
+- Copy the client-side CompletionURL, this will be important to include as a redirect at the end of your study
+- There is then some important code to include in the [index.html](index.html) file (including the client-side URL) in order to automatically grant the participants credit. These will be tagged with "#SONA" so that they are easier to find. The most vital one will look something like this:
+  -window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=XXXX&credit_token=11X11X111X1X1X1XX1X11111111XX11X&survey_code="+SONA_ID;
+  -This code is window.location.href = client-side_URL except replacing the end of the client-side_URL (looks like this survey_code=XXXX) with survey_code="+SONA_ID;
+- So long as you include the code in the [index.html](index.html) tagged with "#SONA" then it should automatically grant credit at the completion of the experiment
+- You will also need to put the client-side_URL into the debriefing form for those participants who decline to participate during the consent phase of the experiment
 
 # Contributors
 
