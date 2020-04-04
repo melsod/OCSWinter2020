@@ -33,6 +33,8 @@ Our selection of Babble Clips used in the experiment is found in the [Selected A
 
 ### First Steps
 
+Although this experiment greatly deviates from the this source, we are indebted to [Matt Crump](https://github.com/CrumpLab) and particularially his example experiments found [here](https://github.com/CrumpLab/jspsychrexamples) for getting our experiment running.
+
 The easiest way to reproduce these results is to fork this repository into your own account and then clone it (so that it is saved locally on your machine). If you understand these instructions then you can skip to the section [Reproducibility](#reproducibility), otherwise we'll explain how to do that:
 
 #### Sign-Up For a GitHub Account
@@ -125,9 +127,68 @@ If you already have R and rStudio then skip to [Reproduce the Experiment](#repro
   - [data_cleaning](R/analysis/data_cleaning.R): An .R file that reads in the final_data.json file, tidies the data, and summarizes individual participant's results. Saves csv files of the summarized data with and without exclusion criteria
   - [data_analysis](R/analysis/data_analysis.Rmd): An .Rmd file (markdown) that reads in the csv produced by [data_cleaning](R/analysis/data_cleaning.R). When compiled/knitted, the resulting html document provides an informal explanation of the data, exclusions, and main analysis
   - [followup_analysis](R/analysis/followup_analysis.R): An .R file that reads in the trial data and computes the results of our follow-up analyses
-- Our results should be reproduced by compiling/knitting the [data_anlysis](R/analysis/data_analysis.Rmd) file and then by running the analysis found in the [followup_analysis](R/analysis/followup_analysis.R) file.
+- Our results should be reproduced by compiling/knitting the [data_analysis](R/analysis/data_analysis.Rmd) file and then by running the analysis found in the [followup_analysis](R/analysis/followup_analysis.R) file.
 
 ### Running the Experiment
+
+Simply by forking the original repository of this experiment you should be set up to run the experiment with minimal changes. We have broken this process into three steps:
+
+#### Hosting the Experiment
+
+With your forked copy of the repository it should be a simple matter of turning on GitHub pages in order to host our version of the experiment. To do so do the following:
+- Navigate to your repository (github.com/GitHubUsername/OCSWinter2020)
+- Click on the "Settings" tab near the top of the screen (github.com/GitHubUsername/OCSWinter2020/settings)
+- Ensure your repository is public (select the "Manage access" tab on the left)
+- Return to the "Settings" page
+- Scroll down to the GitHub Pages section of the page
+- Enable GitHub Pages by changing the source to the master branch
+- You do not need to select a theme
+- In a few minutes the pages site should be published. The URL will appear at the top of the GitHub Pages section (https://GitHubUsername.github.io/OCSWinter2020)
+- Going to this URL will begin the experiment as it is hosted on your GitHub repository
+- Any changes to files in your GitHub repository will affect the experiment, but it may take a few minutes for those changes to be reflected on the Pages URL (it is not instantaneous)
+
+#### Collecting the Data
+
+Unfortunately GitHub pages is only for static websites so we can't directly save the data on your repository. Instead we will save the data to Google's Firebase servers. We will explain how to do this with this particular experiment but we learned this process from the instructions found on [Matt Crump's FirebaseDemo](https://crumplab.github.io/jspsychrexamples/FirebaseDemo/Instructions_FirebaseDemo.html) repository.
+- Create an account with firebase https://firebase.google.com/ (free unless you need lots of data or other options). You may not want this associated with your "personal" google account.
+- Create a new project:
+  - Go to Console (top, right hand side of the screen)
+  - "Create a project"
+  - Give the project a name (probably the same as your GitHub Repo)
+  - I disabled Google Analytics but I suspect it doesn't make a difference
+  - Wait for your project to be ready!
+- Click on the Develop tab on the left hand side of the screen, then select "Database"
+- Scroll down to find the Realtime Database and create that type of database
+- Choose "Start in test mode" and "Enable". This will enable you to read and write to the database. It will also allow anyone else with credentials to read and write to the database. These credentials will be publicly posted on your GitHub repo so there is a security concern if you are saving any private data. These security settings can be changed later (under the "Rules" tab).
+- Now you have a live database. You just need the configuration codes to interact with the database.
+- Click on the gear symbol next to "Project Overview"
+- Select "Project settings"
+- In the first tab, "General", you will need to register an app. Add a web app (symbol looks like this </>).
+- You do not need to turn on hosting unless you decide to host your experiment here instead of GitHub Pages.
+- Give the app a nickname and click "Register app"
+- Firebase will give you some html code that will look something like this:
+<pre class="js"><code>var firebaseConfig = {
+    apiKey: &quot; stuff here&quot;,
+    authDomain: &quot;stuff here &quot;,
+    databaseURL: &quot;stuff here &quot;,
+    projectId: &quot;stuff here &quot;,
+    storageBucket: &quot;&quot;,
+    messagingSenderId: &quot;stuff here &quot;,
+    appId: &quot;stuff here &quot;
+</code></pre>
+<script type="text/javascript">
+var firebaseConfig = {
+    apiKey: " stuff here",
+    authDomain: "stuff here ",
+    databaseURL: "stuff here ",
+    projectId: "stuff here ",
+    storageBucket: "",
+    messagingSenderId: "stuff here ",
+    appId: "stuff here "
+
+</script>
+
+#### Crediting SONA Participants
 
 # Contributors
 
