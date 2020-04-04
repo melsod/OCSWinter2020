@@ -244,7 +244,7 @@ ggplot(d, aes(p_cor_age)) + geom_histogram() +
 
 The x axis is the proportion of correct responses for the age question and the y axis is the number of responses. 
 
-The average proportion correct is `r round(mean(d$p_cor_lang), 2)` which is represented by the red vertical line. In contrast to the first two hypotheses, now the grey vertical line represents 0.33 (33%). This is because is we would expect participants who we guessing or unable to discriminate between the three age groups (0-7, 8-18, and 19-36 months) to be correct 33% on average. As we can see, participants perform appreciably better than chance.
+The average proportion correct is `r round(mean(d$p_cor_age), 2)` which is represented by the red vertical line. In contrast to the first two hypotheses, now the grey vertical line represents 0.33 (33%). This is because is we would expect participants who we guessing or unable to discriminate between the three age groups (0-7, 8-18, and 19-36 months) to be correct 33% on average. As we can see, participants perform appreciably better than chance.
 
 Let's run a one sample t-test to determine if participant's are performing statistically better than chance:
 
