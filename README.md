@@ -112,15 +112,20 @@ If you already have R and rStudio then skip to [Reproduce the Experiment](#repro
 - They were then downloaded using the [R/analysis/pull_firedata.R](R/analysis/pull_firedata.R) file
 - The downloaded data is stored in the [data](data) folder
 - Files in the [data](data) folder:
-  - [short_exp_test_data](data/short_exp_test_data.json) Data from contributers while proofing the experimental procedure. Only includes 1 trial in each block. Used to quickly test the experiment for obvious errors and remote database collection.
-  - [private_pilot_test_data](data/private_pilot_test_data.json) Data from contributers for testing a more finalized version of the task. Used to test whether we were collecting all the relevant data for our analysis
-  - [3_participant_pilot_data](data/3_participant_pilot_data.json) and [2_additional_part_pilot_data](data/2_additional_part_pilot_data.json) Data from a pilot test of 6 "real" participants (3 at a time). Data was used to confirm that automatic creditting for the online system worked. Only includes 5 data points because 1 participants declined to participate at the consent phase. Data is not included in the final sample.
-  - [final_data](data/final_data.json) The final data collected from 626 participants. File size is 105.5 MB so uses Git LFS in order to be uploaded to GitHub. May cause problems for novice users.
-  - [summarized_data](data/summarized_data.csv) A .csv file containing a single line for all 626 participants summarizing their performance and suvery responses.
-  - [w_exclusions](data/w_exclusions.csv) A .csv file containing a single line for all 460 participants who were not excluded, summarizing their performance and suvery responses.
-  - [trial_data.csv](data/trial_data.csv) A .csv file containing a single line per trial for all 626 participants. Each line containes the participant's survey responses
-  - [w_exclusions_trial_data.csv](data/w_exclusions_trial_data.csv) A .csv file containing a single line per trial for all 460 participants who were not excluded. Each line containes the participant's survey responses
-  
+  - [short_exp_test_data](data/short_exp_test_data.json): Data from contributers while proofing the experimental procedure. Only includes 1 trial in each block. Used to quickly test the experiment for obvious errors and remote database collection.
+  - [private_pilot_test_data](data/private_pilot_test_data.json): Data from contributers for testing a more finalized version of the task. Used to test whether we were collecting all the relevant data for our analysis
+  - [3_participant_pilot_data](data/3_participant_pilot_data.json) and [2_additional_part_pilot_data](data/2_additional_part_pilot_data.json): Data from a pilot test of 6 "real" participants (3 at a time). Data was used to confirm that automatic creditting for the online system worked. Only includes 5 data points because 1 participants declined to participate at the consent phase. Data is not included in the final sample.
+  - [final_data](data/final_data.json): The final data collected from 626 participants. File size is 105.5 MB so uses Git LFS in order to be uploaded to GitHub. May cause problems for users unfamiliar with that file type.
+  - [summarized_data](data/summarized_data.csv): A .csv file containing a single line for all 626 participants summarizing their performance and suvery responses.
+  - [w_exclusions](data/w_exclusions.csv): A .csv file containing a single line for all 460 participants who were not excluded, summarizing their performance and suvery responses.
+  - [trial_data](data/trial_data.csv): A .csv file containing a single line per trial for all 626 participants. Each line containes the participant's survey responses
+  - [w_exclusions_trial_data](data/w_exclusions_trial_data.csv): A .csv file containing a single line per trial for all 460 participants who were not excluded. Each line containes the participant's survey responses
+- Files in the [R/analysis](R/analysis) folder:
+  - [pull_firedata](R/analysis/pull_firedata.R): An .R file that pulls all data saved in the Firedata database and saves it in the [data](data) folder in a file called "data.json"
+  - [data_cleaning](R/analysis/data_cleaning.R): An .R file that reads in the final_data.json file, tidies the data, and summarizes individual participant's results. Saves csv files of the summarized data with and without exclusion criteria
+  - [data_analysis](R/analysis/data_analysis.Rmd): An .Rmd file (markdown) that reads in the csv produced by [data_cleaning](R/analysis/data_cleaning.R). When compiled/knitted, the resulting html document provides an informal explanation of the data, exclusions, and main analysis
+  - [followup_analysis](R/analysis/followup_analysis.R): An .R file that reads in the trial data and computes the results of our follow-up analyses
+- Our results should be reproduced by compiling/knitting the [data_anlysis](R/analysis/data_analysis.Rmd) file and then by running the analysis found in the [followup_analysis](R/analysis/followup_analysis.R) file.
 
 ### Running the Experiment
 

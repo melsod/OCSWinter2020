@@ -4,7 +4,7 @@ library("jsonlite")
 # install.packages("plyr")
 library("plyr")
 
-# open final_data and collapse a JSON level
+# open final_data and collapse a JSON level (final_data may cause problems for those unfamliar with Git LFS files)
 data <- unlist(jsonlite::fromJSON("data/final_data.json"), recursive = FALSE, use.names = TRUE)
 data <- rbind.fill(data)
 
@@ -57,7 +57,8 @@ for(i in 1:length(unique(data$subject))){
 }
 
 # name the variables
-colnames(tidy_data) <- c("subject_ID", "p_cor_sex", "p_cor_lang", "p_cor_age", "time_mins","fin_consent_mins","consent_to_fin_mins", "max_RT_exp_trials", "childcare", "caregiver", 
+colnames(tidy_data) <- c("subject_ID", "p_cor_sex", "p_cor_lang", "p_cor_age", "time_mins","fin_consent_mins",
+                         "consent_to_fin_mins", "max_RT_exp_trials", "childcare", "caregiver", 
                          "age", "gender", "gender_text", "country", "country_text", "hearing", 
                          "eng_first", "know_corp_lang", "monolingual", "n_attention_checks", "n_audio_checks",
                          "var_sex", "var_lang", "var_age")
@@ -66,7 +67,11 @@ colnames(tidy_data) <- c("subject_ID", "p_cor_sex", "p_cor_lang", "p_cor_age", "
 tidy_data$know_corp_lang[tidy_data$know_corp_lang == "list()"] <- "None"
 
 # write a csv file for the summarized data
-write.csv(tidy_data, "./data/summarized_data.csv", row.names = FALSE)
+
+# *************************************************************************************************************
+# file should already be saved. Only uncomment if you want to overwite that save
+#write.csv(tidy_data, "./data/summarized_data.csv", row.names = FALSE) 
+# *************************************************************************************************************
 
 ###################################################################
 ##############  Incoperating Data Exclusions ################## BCS
@@ -81,4 +86,7 @@ w_exclusions_data <- w_exclusions_data[w_exclusions_data$know_corp_lang == "None
 w_exclusions_data <- w_exclusions_data[w_exclusions_data$var_sex > 0 & w_exclusions_data$var_lang > 0 & w_exclusions_data$var_age > 0, ] # remove those who only chose 1 response for a full block of trials
 
 # write csv file for the summarized data including exclusions
-write.csv(w_exclusions_data, "./data/w_exclusions_summarized_data.csv", row.names = FALSE)
+# *************************************************************************************************************
+# file should already be saved. Only uncomment if you want to overwite that save
+#write.csv(w_exclusions_data, "./data/w_exclusions_summarized_data.csv", row.names = FALSE)
+# *************************************************************************************************************
