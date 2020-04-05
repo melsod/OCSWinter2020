@@ -186,7 +186,7 @@ Unfortunately GitHub pages is only for static websites so we can't directly save
     appId: &quot;stuff here &quot;
 </code></pre>
 - Copy this portion of the code, go to the [index.html](index.html) file in your local repository, scroll down until you find similar code (about line 70), and replace our Firebase configuration with yours.
-- You may notice that we have included three lines of source code (e.g., <script src="https://<i></i>www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>) rather than Firebase's one in the code that they provide you. All three of these are needed for our procedure. Do not delete or overwrite them. You may update the version number (e.g., from 6.3.4 to 7.13.2) but this is probably not needed.
+- You may notice that we have included three lines of source code (e.g., <script src="https://<i></i>www.<i></i>gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>) rather than Firebase's one in the code that they provide you. All three of these are needed for our procedure. Do not delete or overwrite them. You may update the version number (e.g., from 6.3.4 to 7.13.2) but this is probably not needed.
 - Now go back to your Browser and "Continue to console" (Go back to "Project settings")
 - In the left hand menu, under Develop, select "Authentication"
 - Select "Sign-in method" or "Set up sign-in method"
