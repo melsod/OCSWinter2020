@@ -209,7 +209,7 @@ Our university uses the SONA system to credit participants with course credit. S
 - Then go back to the Study Information page and find the "Completion URLs:"
 - Copy the client-side CompletionURL, this will be important to include as a redirect at the end of your study
 - There is then some important code to include in the [index.html](index.html) file (including the client-side URL) in order to automatically grant the participants credit. These will be tagged with "#SONA" so that they are easier to find. The most vital one will look something like this:
-  - window.location.href = "https://umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=XXXX&credit_token=11X11X111X1X1X1XX1X11111111XX11X&survey_code="+SONA_ID;
+  - window.location.href = "https://<i></i>umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=XXXX&credit_token=11X11X111X1X1X1XX1X11111111XX11X&survey_code="+SONA_ID;
   - This code uses the client-side_URL that you have copied from your SONA experiment page, except that you need to replace the end of the client-side_URL (the end looks like this: survey_code=XXXX) with this code: survey_code="+SONA_ID
   - You are replacing the default XXXX at the end of the code with +SONA_ID because SONA_ID is a variable that contains the correct information so that participants can be granted their credit
 - So long as you include the code in the [index.html](index.html) tagged with "#SONA", and change the client-side URL to the one provided by your study, then it should automatically grant credit at the completion of the experiment
