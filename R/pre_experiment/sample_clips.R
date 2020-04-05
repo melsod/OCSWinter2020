@@ -1,6 +1,3 @@
-# sampled with Rstudio 1.2.5019
-#              R 3.6.1 (2019-07-05)
-
 # install.packages("tidyverse")
 library(tidyverse)
 

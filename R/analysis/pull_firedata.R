@@ -8,18 +8,18 @@ library(fireData) # https://github.com/Kohze/fireData
 # secret key = JTRER28zbNsqNrE0vZRoal74D3JujQaQHjrUG5FW
 
 # download all files from database
-dataBackup(projectURL = "https://ocswinter2020.firebaseio.com",
-           secretKey = "JTRER28zbNsqNrE0vZRoal74D3JujQaQHjrUG5FW",
-           "./data/data.json")
+dataBackup(projectURL = "https://ocswinter2020.firebaseio.com", #proper URL
+           secretKey = "JTRER28zbNsqNrE0vZRoal74D3JujQaQHjrUG5FW", #Secret Key of the database
+           "./data/data.json") # file path of where to save the data (out default assumes cloning the GitHub repo)
 
 
 # install.packages("jsonlite")
 library("jsonlite")
 
-#data <- jsonlite::fromJSON(txt = "data.json")
 
-# choose the short_exp_test_data.json file in R/analysis folder
-# choose whatever data file you want to analyze
+#································To check the number of data points in the database ··············································
+
+# open the file that was just downloaded
 data<-unlist(jsonlite::fromJSON("./data/data.json"), recursive = FALSE, use.names = TRUE)
 
 # install.packages("plyr")

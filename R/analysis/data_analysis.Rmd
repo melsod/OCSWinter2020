@@ -7,17 +7,25 @@ output:
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE)
+knitr::opts_chunk$set(message = FALSE)
+
 ```
+
+### Read in Data
 
 First, we will read in the data:
 
-```{r}
-d <- read.csv("cleaned_data.csv")
+```{r, warning=F, message=F}
+#install.packages("here") # BCS changed
+library(here)
+d <- read.csv(here("data","summarized_data.csv"))
+d_save<-d
 ```
 
 <br>
 
-The dataset contains `r nrow(d)` observations, but let's look at the first handful of rows in the data to see what we're dealing with:
+The summarized dataset contains `r nrow(d)` observations, but let's look at the first handful of rows in the data to see what we're dealing with:
 
 ```{r}
 head(d, n = 5)
@@ -31,7 +39,10 @@ Most of these variables (columns) are self-explanatory. However, for completenes
 + **p_cor_sex**: The proportion correct responses for the sex question
 + **p_cor_lang**: The proportion correct responses for the language question
 + **p_cor_age**: The proportion correct responses for the age question
-+ **time_mins**: the length of time participants took to complete the study in minutes
++ **time_mins**: The length of time participants took to complete the study in minutes
++ **fin_consent_mins**: The length of time participants took to complete the consent form
++ **consent_to_fin_mins**: The length of time the participants took to complete the survey (excluding the consent form)
++ **max_RT_exp_trials**: The longest RT during the main experimental trials
 + **childcare**: the amount of childcare experience the participant has in months
 + **childcare**: the amount of caregiver experience the participant has in months
 + **age**: the age of the participant in years
@@ -44,6 +55,7 @@ Most of these variables (columns) are self-explanatory. However, for completenes
 + **know_corp_lang**: if the participant knows any of the languages in the corpus other than English
 + **monolingual**: if the participant is monolingual
 + **n_attention_checks**: the number of times the participant needed to successfully complete the attention check
++ **n_audio_checks**: the number of times the participant needed to successfully complete the audio check
 + **var_sex**: The participant's variance of responses for the sex question. A score of 0 indicates the participant responded identically for all questions in the sex block
 + **var_lang**: The participant's variance of responses for the language question. A score of 0 indicates the participant responded identically for all questions in the language block
 + **var_age**: The participant's variance of responses for the age question. A score of 0 indicates the participant responded identically for all questions in the age block
@@ -61,13 +73,42 @@ ggplot(d, aes(n_attention_checks)) + geom_histogram() +
     
 ```
 
-The x axis is the number of times a participant required to complete the attention check. The y axis shows he counts of those attempts. The grey line is the exlusion criteria we pre-determrined (i.e., eclude any participant who needs more than 5 attempts).
+The x axis is the number of times a participant required to complete the attention check. The y axis shows he counts of those attempts. The grey line is the exlusion criteria we pre-determrined (i.e., Exclude any participant who needs more than 5 attempts).
 
 We can remove participants based on that criteria:
 
 ```{r}
+# get number of people who would be excluded from full sample without prior exclusions
+atten_exclude<-sum(d_save$n_attention_checks >5) 
+# actually exclude from data
 d <- d[d$n_attention_checks <= 5, ]
 ```
+
+From this we can see that `r atten_exclude` participants were removed based on the attention check.
+
+<br>
+
+Next, we can look at the distribution of number of audio checks required for each participant:
+
+```{r message=FALSE}
+library(ggplot2)
+ggplot(d, aes(n_audio_checks)) + geom_histogram() +
+    geom_vline(xintercept = 5, linetype = "solid",  color = "darkgrey", size = 1.5)
+    
+```
+
+The x axis is the number of times a participant required to complete the audio check. The y axis shows he counts of those attempts. The grey line is the exlusion criteria we pre-determrined (i.e., Exclude any participant who needs more than 5 attempts).
+
+We can remove participants based on that criteria:
+
+```{r}
+# get number of people who would be excluded from full sample without prior exclusions
+audio_exclude<-sum(d_save$n_audio_checks >5)
+# actually exclude from the data
+d <- d[d$n_audio_checks <= 5, ]
+```
+
+From this we can see that `r audio_exclude` participants were removed based on the audio check.
 
 <br>
 
@@ -96,14 +137,32 @@ ggplot(d, aes(know_corp_lang)) + geom_bar() +
 We'll get rid of participants who specify a gender other than female or male, reside in a country other than Canada or the US, do not have English as a first language, have significant familiarity with the languages from Babble Cor other than English, or responded with the same response for any of the sex, language, or age question blocks:
 
 ```{r}
+# get number of people who would be excluded from full sample without prior exclusions
+gen_exclude<-length(d_save$gender)-sum(d_save$gender %in% c("Female", "Male"))
+coun_exclude<-length(d_save$country)-sum(d_save$country %in% c("Canada", "USA"))
+eng_exclude<-length(d_save$eng_first)-sum(d_save$eng_first=="Yes")
+know_corp_exclude<-length(d_save$know_corp_lang)-sum(d_save$know_corp_lang=="None")
+same_resp_exclude<-length(d_save$var_sex)-sum(d_save$var_sex>0 & d_save$var_lang>0 & d_save$var_age>0 )
+
+# actually exclude from the sample
 d <- d[d$gender %in% c("Female", "Male"), ]
 d <- d[d$country %in% c("Canada", "USA"), ]
 d <- d[d$eng_first == "Yes", ]
 d <- d[d$know_corp_lang == "None", ]
-d <- d[d$var_sex > 0 | d$var_lang > 0 | d$var_age > 0, ]
+d <- d[d$var_sex > 0 & d$var_lang > 0 & d$var_age > 0, ]
 ```
 
-The data now contains `r nrow(d)` observations. With the cleaning out of the way, let's now have a look to see whether the data supports our hypotheses.
+Number excluded based on: 
+
+- gender: `r gen_exclude`
+- country: `r coun_exclude`
+- English as a first language: `r eng_exclude`
+- knowing some of the corpus languages: `r know_corp_exclude`
+- giving the same response for all questions in a block: `r same_resp_exclude`
+
+The data now contains `r nrow(d)` observations (some participants were excluded for multiple reasons). Some of our sample's demographic breakdown can be seen at the end of this document.
+
+With the cleaning out of the way, let's now have a look to see whether the data supports our hypotheses.
 
 <br>
 
@@ -135,7 +194,7 @@ For completeness, let run a one sample t-test that will test if the participants
 t.test(d$p_cor_sex, mu = 0.5)
 ```
 
-From this output we can see that the results are not significant at the 0.01 level. This idicates that participants performed no different than what we would expect by chance.
+From this output we can see that the results are significant at the $\alpha$ = 0.01 level but in the wrong direction. This idicates that participants performed worse than what we would expect by chance.
 
 
 <br>
@@ -155,7 +214,7 @@ ggplot(d, aes(p_cor_lang)) + geom_histogram() +
 
 The x axis is the proportion of correct responses for the language question and the y axis is the number of responses. 
 
-Tthe average proportion correct is `r round(mean(d$p_cor_lang), 2)` which is represented by the red vertical line. Again, the grey vertical line represents 0.50 (50%). 
+The average proportion correct is `r round(mean(d$p_cor_lang), 2)` which is represented by the red vertical line. Again, the grey vertical line represents 0.50 (50%). 
 
 Here participant's are (numerically) performing better than chance. 
 
@@ -163,9 +222,10 @@ Let's run a one sample t-test to determine if participant's are performing stati
 
 ```{r}
 t.test(d$p_cor_lang, mu = 0.5)
+eff_size<-(mean(d$p_cor_lang)-0.5)/sd(d$p_cor_lang)
 ```
 
-From this output we can see that the results are significant at the 0.01 level. For those unfamiliar with the scientific notation of the p value reported in the output above, the p value is `r format(t.test(d$p_cor_lang, mu = 0.5)$p.value, scientific=FALSE)`. This indicates that participants are able to discriminate between the language the babies are aquiring better than would be expected by chance.
+From this output we can see that the results are significant at the 0.01 level. For those unfamiliar with the scientific notation of the p value reported in the output above, the p value is `r format(t.test(d$p_cor_lang, mu = 0.5)$p.value, scientific=FALSE)`. This indicates that participants are able to discriminate between the language the babies are aquiring better than would be expected by chance. However the effect size is quite small with a cohen's D = `r eff_size`.
 
 <br>
 
@@ -184,20 +244,22 @@ ggplot(d, aes(p_cor_age)) + geom_histogram() +
 
 The x axis is the proportion of correct responses for the age question and the y axis is the number of responses. 
 
-Tthe average proportion correct is `r round(mean(d$p_cor_lang), 2)` which is represented by the red vertical line. In contrast to the first two hypotheses, now the grey vertical line represents 0.33 (33%). This is because is we would expect participants who we guessing or unable to discriminate between the three age groups (0-7, 8-18, and 19-36 months) to be correct 33% on average. As we can see, participants perform appreciably better than chance.
+The average proportion correct is `r round(mean(d$p_cor_age), 2)` which is represented by the red vertical line. In contrast to the first two hypotheses, now the grey vertical line represents 0.33 (33%). This is because is we would expect participants who we guessing or unable to discriminate between the three age groups (0-7, 8-18, and 19-36 months) to be correct 33% on average. As we can see, participants perform appreciably better than chance.
 
 Let's run a one sample t-test to determine if participant's are performing statistically better than chance:
 
 ```{r}
 t.test(d$p_cor_age, mu = 1/3)
+eff_size<-(mean(d$p_cor_age)-(1/3))/sd(d$p_cor_lang)
 ```
 
-From this output we can see that the results are significant at the 0.01 level. Again, for those unfamiliar with the scientific notation of the p value reported in the output above, the p value is `r format(t.test(d$p_cor_age, mu = 0.5)$p.value, scientific=FALSE)`. This indicates that participants are able to discriminate between the age group the babies belong to better than would be expected by chance.
+From this output we can see that the results are significant at the 0.01 level. Again, for those unfamiliar with the scientific notation of the p value reported in the output above, the p value is `r format(t.test(d$p_cor_age, mu = 0.5)$p.value, scientific=FALSE)`. This indicates that participants are able to discriminate between the age group the babies belong to better than would be expected by chance. The effect size for this difference is quite strong with a cohen's D = `r eff_size`.
 
 <br> 
 
-Given this significant result that people were able to discriminate between babies age groups as well as the language the babies are aquiring, we have several follow up hypotheses:
+Given these significant results, that people were able to discriminate between babies age groups as well as the language the babies are aquiring, we have several follow up hypotheses.
 
+<!--
 <br>
 
 
@@ -246,9 +308,27 @@ summary(aov(p_cor_age ~ gender, data=d))
 ```
 
 We can see that there is not a significant difference in performance between males and females.
+-->
+<br>
+<br>
+<br>
+<br>
+<br>
 
-<br>
-<br>
-<br>
-<br>
-<br>
+### Demographic Breakdown
+
+Below is some of the counts and descriptive statistics for our dataset
+
+```{r}
+library(plyr)
+count(d, 'gender')
+count(d, 'gender_text')
+count(d, 'country')
+count(d, 'country_text')
+count(d, 'hearing') # no exclusion based on this?
+count(d, 'eng_first')
+count(d, 'know_corp_lang')
+count(d, 'monolingual') # no exlusion based on this?
+library(psych)
+describe(d)
+```
