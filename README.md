@@ -4,19 +4,19 @@ This is the repository for PSYC 4540 T39/7310 T34, a course on Open and Collabor
 
 ## The Project
 
-### What can we perceive in infant babble?
+### What can we perceive in infant vocalizations?
 
-The purpose of this study is to determine whether or not English-speaking monolingual adults can identify the age, sex, or first language of a baby after listening to recorded snippets of baby babble. The study will also determine if the adults’ gender or caregiving experience affect their abilities to discriminate between the babble.
+The purpose of this study is to determine whether or not English-speaking monolingual adults can identify the age, sex, or first language of an infant after listening to recorded snippets of infant vocalizations. The study will also determine if the adults’ gender or caregiving experience affect their abilities to discriminate between the vocalizations.
 
-This research is valuable in that it lends to the study of human language development. There have been mixed results so far on whether humans can identify differences in baby babble based on a baby’s first language and age. Furthermore, there appears to be no literature on adult participants identifying differences in babble based on the sex of the baby, although there is evidence that sex hormones are linked to language development in babies as young as 5-months (Quast et al., 2016). Our research will contribute to these growing bodies of literature.
+This research is valuable in that it lends to the study of human language development. There have been mixed results so far on whether humans can identify differences in infant vocalizations based on a infant’s first language and age. Furthermore, there appears to be no literature on adult participants identifying differences in vocalizations based on the sex of the infant, although there is evidence that sex hormones are linked to language development in infants as young as 5-months (Quast et al., 2016). Our research will contribute to these growing bodies of literature.
 
 ### Our Procedure
 
-In this experiment, adult participants heared a series of short audio clips of babble, in batches of 10. Participants were asked a question about each clip. Their task was to answer the questions based on their best judgement. All answers were be collected by a computer. At the end of the study, some information was asked about the participant and their experience with infants.
+In this experiment, adult participants heard a series of short audio clips of infant vocalizations, in batches of 10. Participants were asked a question about each clip. Their task was to answer the questions based on their best judgement. All answers were be collected by a computer. At the end of the study, some information was asked about the participant and their experience with infants.
 
 ### Our Results
 
-We found that participants were able to perform better than chance at judging a baby's age, and language that it was learning. Participants also misjudged a baby's sex more often than they were correct. We did not find that cargiving experience, childcare experience, or gender played a factor in peoples' accuracy when judging either the baby's age or language that it was learning.
+We found that participants were able to perform better than chance at judging a infant's age, and language that it was learning. Participants also misjudged a infant's sex more often than they were correct. We did not find that caregiving experience, childcare experience, or gender played a factor in peoples' accuracy when judging either the infant's age or language that it was learning.
 
 # Contributors
 
@@ -41,7 +41,7 @@ Our selection of Babble Clips used in the experiment is found in the [Selected A
 
 ### First Steps
 
-Although this experiment greatly deviates from the this source, we are indebted to [Matt Crump](https://github.com/CrumpLab) and particularially his example experiments found [here](https://github.com/CrumpLab/jspsychrexamples) for getting our experiment running.
+Although this experiment greatly deviates from the this source, we are indebted to [Matt Crump](https://github.com/CrumpLab) and particularly his example experiments found [here](https://github.com/CrumpLab/jspsychrexamples) for getting our experiment running.
 
 The easiest way to reproduce these results is to fork this repository into your own account and then clone it (so that it is saved locally on your machine). If you understand these instructions then you can skip to the section [Reproducibility](#reproducibility), otherwise we'll explain how to do that:
 
@@ -113,25 +113,25 @@ If you already have R and rStudio then skip to [Reproduce the Experiment](#repro
 - Images for the experiment are found in the [img folder](img)
 - Almost all of the text that appears in the experiment is found in the [stimuli folder](stimuli) in the [exp_text.js file](stimuli/exp_text.js)
 - The original sample of audio clips were selected using the [R/pre_experiment/sample_clips_2.r](R/pre_experiment/sample_clips_2.r) file but we suggest using [R/pre_experiment/sample_clips.r](R/pre_experiment/sample_clips.r) because it has been adapted to work better with the repositories organizational structure (this may mean a different original sample but have not tested it)
-- After being manually screened by 3 of the contributers (the files they decided to exclude can be found at [audio/Exclusion_files](audio/Exclusion_files) and [R/pre_experiment/files_to_exclude.RData](R/pre_experiment/files_to_exclude.RData)) the final selection of clips was done using the [R/pre_experiment/narrow_sample.R](R/pre_experiment/narrow_sample.R) file
+- After being manually screened by 3 of the contributors (the files they decided to exclude can be found at [audio/Exclusion_files](audio/Exclusion_files) and [R/pre_experiment/files_to_exclude.RData](R/pre_experiment/files_to_exclude.RData)) the final selection of clips was done using the [R/pre_experiment/narrow_sample.R](R/pre_experiment/narrow_sample.R) file
 - The stimuli that are presented to the participants were also created with the [R/pre_experiment/narrow_sample.R](R/pre_experiment/narrow_sample.R) file and are found in [stimuli/age_language_test_stimuli.js](stimuli/age_language_test_stimuli.js) and [stimuli/sex_test_stimuli.js](stimuli/sex_test_stimuli.js)
 
 #### Reproduce the Results
 
 Our results should be reproduced by compiling/knitting the [data_analysis](R/analysis/data_analysis.Rmd) file and then by running the analyses found in the [followup_analysis](R/analysis/followup_analysis.R) file. For completeness, here is a description of the files relevant to our results:
 
-- All data collected were temporarially stored on a Google Firebase server
+- All data collected were temporarily stored on a Google Firebase server
 - They were then downloaded using the [R/analysis/pull_firedata.R](R/analysis/pull_firedata.R) file
 - The downloaded data is stored in the [data](data) folder
 - Files in the [data](data) folder:
-  - [short_exp_test_data](data/short_exp_test_data.json): Data from contributers while proofing the experimental procedure. Only includes 1 trial in each block. Used to quickly test the experiment for obvious errors and remote database collection.
-  - [private_pilot_test_data](data/private_pilot_test_data.json): Data from contributers for testing a more finalized version of the task. Used to test whether we were collecting all the relevant data for our analysis
-  - [3_participant_pilot_data](data/3_participant_pilot_data.json) and [2_additional_part_pilot_data](data/2_additional_part_pilot_data.json): Data from a pilot test of 6 "real" participants (3 at a time). Data was used to confirm that automatic creditting for the online system worked. Only includes 5 data points because 1 participants declined to participate at the consent phase. Data is not included in the final sample.
+  - [short_exp_test_data](data/short_exp_test_data.json): Data from contributors while proofing the experimental procedure. Only includes 1 trial in each block. Used to quickly test the experiment for obvious errors and remote database collection.
+  - [private_pilot_test_data](data/private_pilot_test_data.json): Data from contributors for testing a more finalized version of the task. Used to test whether we were collecting all the relevant data for our analysis
+  - [3_participant_pilot_data](data/3_participant_pilot_data.json) and [2_additional_part_pilot_data](data/2_additional_part_pilot_data.json): Data from a pilot test of 6 "real" participants (3 at a time). Data was used to confirm that automatic crediting for the online system worked. Only includes 5 data points because 1 participants declined to participate at the consent phase. Data is not included in the final sample.
   - [final_data](data/final_data.json): The final data collected from 626 participants. File size is 105.5 MB so it uses [Git LFS](https://git-lfs.github.com/) in order to be uploaded to GitHub. It should work with the process described but may cause problems (we have very little experience with Git LFS). In any case, [final_data](data/final_data.json) has already been processed into the following files:
-    - [summarized_data](data/summarized_data.csv): A .csv file containing a single line for all 626 participants summarizing their performance and suvery responses.
-    - [w_exclusions](data/w_exclusions.csv): A .csv file containing a single line for all 460 participants who were not excluded, summarizing their performance and suvery responses.
-    - [trial_data](data/trial_data.csv): A .csv file containing a single line per trial for all 626 participants. Each line containes the participant's survey responses
-    - [w_exclusions_trial_data](data/w_exclusions_trial_data.csv): A .csv file containing a single line per trial for all 460 participants who were not excluded. Each line containes the participant's survey responses
+    - [summarized_data](data/summarized_data.csv): A .csv file containing a single line for all 626 participants summarizing their performance and survey responses.
+    - [w_exclusions](data/w_exclusions.csv): A .csv file containing a single line for all 460 participants who were not excluded, summarizing their performance and survey responses.
+    - [trial_data](data/trial_data.csv): A .csv file containing a single line per trial for all 626 participants. Each line contains the participant's survey responses
+    - [w_exclusions_trial_data](data/w_exclusions_trial_data.csv): A .csv file containing a single line per trial for all 460 participants who were not excluded. Each line contains the participant's survey responses
 - Files in the [R/analysis](R/analysis) folder:
   - [pull_firedata](R/analysis/pull_firedata.R): An .R file that pulls all data saved in the Firedata database and saves it in the [data](data) folder in a file called "data.json"
   - [data_cleaning](R/analysis/data_cleaning.R): An .R file that reads in the final_data.json file, tidies the data, and summarizes individual participant's results. Saves csv files of the summarized data with and without exclusion criteria
@@ -198,7 +198,7 @@ Unfortunately GitHub pages is only for static websites so we can't directly save
   - Click on "Database secrets"
   - Under your projects database, click to show the secret key. Copy and paste this somewhere you can use it later. The only place you'll probably use it is in the [R/analysis/pull_firedata.R](R/analysis/pull_firedata.R) file to pull off the data. You will also need your projectURL (found in the code provided by firebase).
 
-The rest of the references to firebase should be explained well enough in the comments of the [index.html](index.html) file. To more easily find this code I have tagged those lines with "#FIREBASE". Now when someone finishes the experiment thier data should be saved to your Firebase realtime database.
+The rest of the references to firebase should be explained well enough in the comments of the [index.html](index.html) file. To more easily find this code I have tagged those lines with "#FIREBASE". Now when someone finishes the experiment their data should be saved to your Firebase realtime database.
 
 #### Crediting SONA Participants
 
@@ -207,7 +207,7 @@ Our university uses the SONA system to credit participants with course credit. S
 - Go to your SONA experiment's "Change Study Information" page
 - Set the SONA Study URL to your experiments URL with "?id=%SURVEY_CODE%" added onto the end of the URL (without the quotation marks). For example, you might set the Study URL to: https://<i></i>YourGitHubUsername.github.io/OCSWinter2020/?id=%SURVEY_CODE%
 - Then go back to the Study Information page and find the "Completion URLs:"
-- Copy the client-side CompletionURL, this will be important to include as a redirect at the end of your study
+- Copy the client-side Completion URL, this will be important to include as a redirect at the end of your study
 - There is then some important code to include in the [index.html](index.html) file (including the client-side URL) in order to automatically grant the participants credit. These will be tagged with "#SONA" so that they are easier to find. The most vital one will look something like this:
   - window.location.href = "https://<i></i>umanitobapsych.sona-systems.com/webstudy_credit.aspx?experiment_id=XXXX&credit_token=11X11X111X1X1X1XX1X11111111XX11X&survey_code="+SONA_ID;
   - This code uses the client-side_URL that you have copied from your SONA experiment page, except that you need to replace the end of the client-side_URL (the end looks like this: survey_code=XXXX) with this code: survey_code="+SONA_ID
