@@ -152,7 +152,7 @@ With your forked copy of the repository it should be a simple matter of turning 
 - Scroll down to the GitHub Pages section of the page
 - Enable GitHub Pages by changing the source to the master branch
 - You do not need to select a theme
-- In a few minutes the pages site should be published. The URL will appear at the top of the GitHub Pages section (https://YourGitHubUsername.github.io/OCSWinter2020)
+- In a few minutes the pages site should be published. The URL will appear at the top of the GitHub Pages section (https://<i></i>YourGitHubUsername.github.io/OCSWinter2020)
 - Going to this URL will begin the experiment as it is hosted on your GitHub repository
 - Any changes to files in your GitHub repository will affect the experiment, but it may take a few minutes for those changes to be reflected on the Pages URL (it is not instantaneous)
 
@@ -186,7 +186,7 @@ Unfortunately GitHub pages is only for static websites so we can't directly save
     appId: &quot;stuff here &quot;
 </code></pre>
 - Copy this portion of the code, go to the [index.html](index.html) file in your local repository, scroll down until you find similar code (about line 70), and replace our Firebase configuration with yours.
-- You may notice that we have included three lines of source code (e.g., <script src="https://www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>) rather than Firebase's one in the code that they provide you. All three of these are needed for our procedure. Do not delete or overwrite them. You may update the version number (e.g., from 6.3.4 to 7.13.2) but this is probably not needed.
+- You may notice that we have included three lines of source code (e.g., <script src="https://<i></i>www.gstatic.com/firebasejs/6.3.4/firebase-app.js"></script>) rather than Firebase's one in the code that they provide you. All three of these are needed for our procedure. Do not delete or overwrite them. You may update the version number (e.g., from 6.3.4 to 7.13.2) but this is probably not needed.
 - Now go back to your Browser and "Continue to console" (Go back to "Project settings")
 - In the left hand menu, under Develop, select "Authentication"
 - Select "Sign-in method" or "Set up sign-in method"
@@ -205,7 +205,7 @@ The rest of the references to firebase should be explained well enough in the co
 Our university uses the SONA system to credit participants with course credit. SONA allows online experiments and automatic crediting for those experiments. To do this:
 - Set up a SONA online experiment
 - Go to your SONA experiment's "Change Study Information" page
-- Set the SONA Study URL to your experiments URL with "?id=%SURVEY_CODE%" added onto the end of the URL (without the quotation marks). For example, you might set the Study URL to: https://YourGitHubUsername.github.io/OCSWinter2020/?id=%SURVEY_CODE%
+- Set the SONA Study URL to your experiments URL with "?id=%SURVEY_CODE%" added onto the end of the URL (without the quotation marks). For example, you might set the Study URL to: https://<i></i>YourGitHubUsername.github.io/OCSWinter2020/?id=%SURVEY_CODE%
 - Then go back to the Study Information page and find the "Completion URLs:"
 - Copy the client-side CompletionURL, this will be important to include as a redirect at the end of your study
 - There is then some important code to include in the [index.html](index.html) file (including the client-side URL) in order to automatically grant the participants credit. These will be tagged with "#SONA" so that they are easier to find. The most vital one will look something like this:
