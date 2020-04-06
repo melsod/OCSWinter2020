@@ -118,7 +118,9 @@ If you already have R and rStudio then skip to [Reproduce the Experiment](#repro
 
 #### Reproduce the Results
 
-Our results should be reproduced by compiling/knitting the [data_analysis](R/analysis/data_analysis.Rmd) file and then by running the analyses found in the [followup_analysis](R/analysis/followup_analysis.R) file. For completeness, here is a description of the files relevant to our results:
+Our manuscripts can be found in the [paper folder](paper).
+
+Our statistical results should be reproduced by compiling/knitting the [data_analysis](R/analysis/data_analysis.Rmd) file and then by running the analyses found in the [followup_analysis](R/analysis/followup_analysis.R) file. For completeness, here is a description of the files relevant to our results:
 
 - All data collected were temporarily stored on a Google Firebase server
 - They were then downloaded using the [R/analysis/pull_firedata.R](R/analysis/pull_firedata.R) file
@@ -134,9 +136,10 @@ Our results should be reproduced by compiling/knitting the [data_analysis](R/ana
     - [w_exclusions_trial_data](data/w_exclusions_trial_data.csv): A .csv file containing a single line per trial for all 460 participants who were not excluded. Each line contains the participant's survey responses
 - Files in the [R/analysis](R/analysis) folder:
   - [pull_firedata](R/analysis/pull_firedata.R): An .R file that pulls all data saved in the Firedata database and saves it in the [data](data) folder in a file called "data.json"
-  - [data_cleaning](R/analysis/data_cleaning.R): An .R file that reads in the final_data.json file, tidies the data, and summarizes individual participant's results. Saves csv files of the summarized data with and without exclusion criteria
+  - [data_cleaning](R/analysis/data_cleaning.R): An .R file that reads in the final_data.json file, tidies the data, and summarizes individual participant's results. Saves csv files of the summarized data [with](data/w_exclusions.csv) and [without](data/summarized_data.csv) exclusion criteria
   - [data_analysis](R/analysis/data_analysis.Rmd): An .Rmd file (markdown) that reads in the csv produced by [data_cleaning](R/analysis/data_cleaning.R). When compiled/knitted, the resulting html document provides an informal explanation of the data, exclusions, and main analysis
-  - [followup_analysis](R/analysis/followup_analysis.R): An .R file that reads in the trial data and computes the results of our follow-up analyses
+  - [followup_analysis](R/analysis/followup_analysis.R): An .R file that reads in the trial data and computes the results of our follow-up analyses. By default it reads in the pre-compiled trial by trial data ([with](data/w_exclusions_trial_data.csv) or [without](data/trial_data.csv) exclusions) but if the final_data.json file has been downloaded correctly, then this file can also be used to compute the trial-by-trial summaries
+  - [create figures](R/analysis/create_figures.R): An .R rile that reads in the summarized data (with exclusions) and plots the histograms that accompany the t-tests in the manuscript. Saves images to [paper/figures](paper/figures)
 
 ### Running the Experiment
 
