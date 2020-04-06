@@ -182,7 +182,7 @@ The x axis is the proportion of correct responses for the sex question and the y
 
 As we can see, some people at the far left of the plot do terrible, scoring 0% correct. Some people do better, scoring quite well (80% correct).
 
-However, the average proportion correct is `r round(mean(d$p_cor_sex), 2)` which is represented by the red vertical line.
+However, the average proportion correct is `r round(mean(d$p_cor_sex), 2)`(sd = `r round(sd(d$p_cor_sex),2)`) which is represented by the red vertical line.
 
 The grey vertical line represents 0.50 (50%). This is how well we would expect people to do on average if they we're just guessing or had no ability to discriminate between audio clips from male or female babies.
 
@@ -214,7 +214,7 @@ ggplot(d, aes(p_cor_lang)) + geom_histogram() +
 
 The x axis is the proportion of correct responses for the language question and the y axis is the number of responses. 
 
-The average proportion correct is `r round(mean(d$p_cor_lang), 2)` which is represented by the red vertical line. Again, the grey vertical line represents 0.50 (50%). 
+The average proportion correct is `r round(mean(d$p_cor_lang), 2)`(sd = `r round(sd(d$p_cor_lang),2)`) which is represented by the red vertical line. Again, the grey vertical line represents 0.50 (50%).
 
 Here participant's are (numerically) performing better than chance. 
 
@@ -244,7 +244,7 @@ ggplot(d, aes(p_cor_age)) + geom_histogram() +
 
 The x axis is the proportion of correct responses for the age question and the y axis is the number of responses. 
 
-The average proportion correct is `r round(mean(d$p_cor_age), 2)` which is represented by the red vertical line. In contrast to the first two hypotheses, now the grey vertical line represents 0.33 (33%). This is because is we would expect participants who we guessing or unable to discriminate between the three age groups (0-7, 8-18, and 19-36 months) to be correct 33% on average. As we can see, participants perform appreciably better than chance.
+The average proportion correct is `r round(mean(d$p_cor_age), 2)`(sd = `r round(sd(d$p_cor_lang),2)`) which is represented by the red vertical line. In contrast to the first two hypotheses, now the grey vertical line represents 0.33 (33%). This is because is we would expect participants who we guessing or unable to discriminate between the three age groups (0-7, 8-18, and 19-36 months) to be correct 33% on average. As we can see, participants perform appreciably better than chance.
 
 Let's run a one sample t-test to determine if participant's are performing statistically better than chance:
 
