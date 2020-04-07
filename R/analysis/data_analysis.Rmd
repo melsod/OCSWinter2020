@@ -192,9 +192,10 @@ For completeness, let run a one sample t-test that will test if the participants
 
 ```{r}
 t.test(d$p_cor_sex, mu = 0.5)
+eff_size<-(mean(d$p_cor_sex)-0.5)/sd(d$p_cor_sex)
 ```
 
-From this output we can see that the results are significant at the $\alpha$ = 0.01 level but in the wrong direction. This idicates that participants performed worse than what we would expect by chance.
+From this output we can see that the results are significant at the $\alpha$ = 0.01 level but in the wrong direction. This idicates that participants performed worse than what we would expect by chance. The cohen's D effect size of this difference is `r eff_size`.
 
 
 <br>
