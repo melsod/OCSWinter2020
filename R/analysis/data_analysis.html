@@ -523,7 +523,8 @@ d &lt;- d[d$var_sex &gt; 0 &amp; d$var_lang &gt; 0 &amp; d$var_age &gt; 0, ]</co
 ## sample estimates:
 ## mean of x 
 ## 0.4784783</code></pre>
-<p>From this output we can see that the results are significant at the <span class="math inline">\(\alpha\)</span> = 0.01 level but in the wrong direction. This idicates that participants performed worse than what we would expect by chance.</p>
+<pre class="r"><code>eff_size&lt;-(mean(d$p_cor_sex)-0.5)/sd(d$p_cor_sex)</code></pre>
+<p>From this output we can see that the results are significant at the <span class="math inline">\(\alpha\)</span> = 0.01 level but in the wrong direction. This idicates that participants performed worse than what we would expect by chance. The cohen’s D effect size of this difference is -0.1364611.</p>
 <p><br></p>
 </div>
 <div id="hypothesis-2-participants-will-be-able-to-identify-whether-the-infant-is-acquiring-english-or-another-language-above-chance-50" class="section level3">
