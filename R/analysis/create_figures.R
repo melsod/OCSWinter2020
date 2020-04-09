@@ -19,7 +19,7 @@ hist_sex<-ggplot(d, aes(p_cor_sex)) +
   ylab("Count") + # y-axis label
   labs(title = "Histogram for Sex Judgements", # graph title
        # below is the caption with a wrapper to make a new line every 100 characters, mean and sd inserted
-       caption = wrapper(paste0("Figure 1: X-axis represents the propotion of correct responses across the 10 experimental trials. Mean proportion correct was ",round(mean(d$p_cor_sex),2)," (sd = ",round(sd(d$p_cor_sex), 2),")."), 100))+
+       caption = wrapper(paste0("Figure 1: X-axis represents the propotion of correct responses across the 10 experimental trials. Y-axis represents the number of participants with that propotion of correct responses. Mean proportion correct was ",round(mean(d$p_cor_sex),2)," (sd = ",round(sd(d$p_cor_sex), 2),")."), 100))+
   theme_bw()+ # use black and white theme
   theme(plot.caption = element_text(hjust = 0, face = "italic"),panel.grid.major = element_blank(),panel.grid.minor = element_blank())# remove grid markers
 
@@ -33,7 +33,7 @@ hist_language<-ggplot(d, aes(p_cor_lang)) + geom_histogram(bins = 10) +
   geom_vline(xintercept = 0.5, linetype="solid",  color = "darkgrey", size=1.5) +
   geom_vline(xintercept = mean(d$p_cor_lang), linetype="solid",  color = "red", size=1.5) +
   xlab("Proportion Correct for Language Judgement") + ylab("Count") +
-  labs(title = "Histogram for Language Judgements", caption = wrapper(paste0("Figure 2: X-axis represents the propotion of correct responses across the 12 experimental trials. Mean proportion correct was ",round(mean(d$p_cor_lang),2)," (sd = ",round(sd(d$p_cor_lang), 2),")."), 100))+
+  labs(title = "Histogram for Language Judgements", caption = wrapper(paste0("Figure 2: X-axis represents the propotion of correct responses across the 12 experimental trials. Y-axis represents the number of participants with that propotion of correct responses. Mean proportion correct was ",round(mean(d$p_cor_lang),2)," (sd = ",round(sd(d$p_cor_lang), 2),")."), 100))+
   theme_bw()+
   theme(plot.caption = element_text(hjust = 0, face = "italic"),panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
@@ -47,7 +47,7 @@ hist_age<-ggplot(d, aes(p_cor_age)) + geom_histogram(bins = 10) +
   geom_vline(xintercept = (1/3), linetype="solid",  color = "darkgrey", size=1.5) +
   geom_vline(xintercept = mean(d$p_cor_age), linetype="solid",  color = "red", size=1.5) +
   xlab("Proportion Correct for Age Judgement") + ylab("Count") +
-  labs(title = "Histogram for Age Judgements", caption = wrapper(paste0("Figure 3: X-axis represents the propotion of correct responses across the 12 experimental trials. Mean proportion correct was ",round(mean(d$p_cor_age),2)," (sd = ",round(sd(d$p_cor_age), 2),")."), 100))+
+  labs(title = "Histogram for Age Judgements", caption = wrapper(paste0("Figure 3: X-axis represents the propotion of correct responses across the 12 experimental trials. Y-axis represents the number of participants with that propotion of correct responses. Mean proportion correct was ",round(mean(d$p_cor_age),2)," (sd = ",round(sd(d$p_cor_age), 2),")."), 100))+
   theme_bw()+
   theme(plot.caption = element_text(hjust = 0, face = "italic"),panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
