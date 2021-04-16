@@ -95,7 +95,7 @@ table(selected_files$unique_id)
 table(selected_files$age_language)
 
 
-# delete folder if it exsists
+# delete folder if it exists
 unlink("./audio/selected_audio_files/clips_to_use", recursive = TRUE)
 dir.create("./audio/selected_audio_files/clips_to_use")
 file.copy(from = paste0("./audio/clips_corpus/", selected_files$clip_ID),

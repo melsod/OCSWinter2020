@@ -37,7 +37,8 @@ hist_sex<-ggplot(d, aes(p_cor_sex)) +
   theme(plot.caption = ggtext::element_markdown(hjust = 0, size = 12, family = "Times New Roman"), axis.title = element_text(size = 14), panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
 # save histogram to file
-png("paper/figures/hist_sex.png") # make file
+#png("paper/figures/hist_sex.png") # make file
+jpeg("paper/figures/hist_sex.jpeg") # make file
 print(hist_sex) # put histogram into the file
 dev.off() #turn off a dev tool so that the save completes
 
@@ -58,7 +59,8 @@ hist_language<-ggplot(d, aes(p_cor_lang)) + geom_histogram(bins = 10) +
 
 
 # save histogram to file
-png("paper/figures/hist_language.png")
+#png("paper/figures/hist_language.png")
+jpeg("paper/figures/hist_language.jpeg")
 print(hist_language)
 dev.off()
 
@@ -78,6 +80,7 @@ hist_age<-ggplot(d, aes(p_cor_age)) + geom_histogram(bins = 10) +
   theme(plot.caption = ggtext::element_markdown(hjust = 0, size = 12), axis.title = element_text(size = 14), panel.grid.major = element_blank(),panel.grid.minor = element_blank())
 
 # save histogram to file
-png("paper/figures/hist_age.png")
+#png("paper/figures/hist_age.png")
+jpeg("paper/figures/hist_age.jpeg")
 print(hist_age)
 dev.off()
