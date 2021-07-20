@@ -8,10 +8,10 @@
 #install.packages("jsonlite")
 library("jsonlite")
 
-flag<-FALSE
+flag<-TRUE
 # *************************************************************************************************************
 # ********** Users unfamiliar with Git LFS may have difficulty getting/using the final_data.json file *********
-# ********** So the code that relies on this file is skipped by default, change the flag paramter to  *********
+# ********** So the code that relies on this file is skipped by default, change the flag parameter to *********
 # ********** TRUE if you have the final_data.json file and want to recompute the dataframe. The       *********
 # ********** tidied dataframe should be saved as trial_data.csv in the dataframe already so           *********
 # ********** recomputing the data should be unnecessary (leave flag as false)                         *********
@@ -35,7 +35,7 @@ extract_json <- function(key, survey_data){
 }
 
 # create empty dataframe
-tidy_data <- data.frame(matrix(0, length(unique(data$subject))*34, 15))
+tidy_data <- data.frame(matrix(0, length(unique(data$subject))*34, 21))
 
 # set count
 count<-1
@@ -142,6 +142,12 @@ for(i in 1:length(unique(data$subject))){
                                       engl_first,
                                       know_corp,
                                       monolingual,
+                                      sub_data$age_group[j],
+                                      sub_data$button_pressed[j],
+                                      sub_data$gender[j],
+                                      sub_data$language[j],
+                                      sub_data$unique_id[j],
+                                      substr(sub_data$stimulus[j],53,66),
                                       stringsAsFactors = FALSE)
       # updat the count
       count<-count+1
@@ -152,7 +158,7 @@ for(i in 1:length(unique(data$subject))){
 # set the variable names
 colnames(tidy_data) <- c("subject_ID", "correct", "phase", "time_ellapsed_mins", "childcare", "caregiver", 
                          "age", "gender", "gender_text", "country", "country_text", "hearing", 
-                         "eng_first", "know_corp_lang", "monolingual")
+                         "eng_first", "know_corp_lang", "monolingual", "stim_ageGroup","button_pressed","stim_gender","stim_language","stim_ID","clipID")
 }
 # END DEFAULT SKIPPING CODE
 
@@ -222,7 +228,7 @@ summary(model1)
 
 
 
-# Adding level 1 predictors: childcare & caredgiver
+# Adding level 1 predictors: childcare & caregiver
 model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
                data = subset(tidy_data,
                              tidy_data$gender%in%c("Male","Female") & tidy_data$phase=="Age"),

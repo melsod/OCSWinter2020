@@ -1,0 +1,463 @@
+---
+title: "Resubmit Exclusions"
+output: pdf_document
+---
+
+
+```{r include=F}
+# will need the private_metadata from the authors
+library(plyr)
+library(here)
+library(tidyverse)
+
+# read in the private metat data
+d<-read.csv(here::here("private_metadata.csv"))
+
+### same code as in pre-experiment to make unique IDs ###
+# remove the - sign. It causes problems later
+d$corpus<-revalue(d$corpus, c("Casillas-Yeli"="CasillasYeli"))
+#add a column called with a unique id (the original child id pasted together with the corpus)
+d <- d %>% mutate(unique_id = paste0(child_ID, corpus))
+#get rid of data from the warlaumont corpus
+d <- d %>% filter(corpus != c("Warlaumont"))
+#make a new column with the language
+d <- d %>% mutate(language = ifelse(corpus == "Seedlings",
+                                    "English",
+                                    "Non-English"))
+#make a categorical age variable based on 07, 8-18, and 19-36 groupings
+d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7,
+                                      "0-7",
+                                      ifelse(age_mo_round <= 18,
+                                             "8-18",
+                                             "19-36")))
+#make grouping variable for age-language question
+d <- d %>% mutate(age_language = paste0(age_groups, language))
+#keep only canonical and non-canonical
+d <- d %>% filter(Answer %in% c("Canonical", "Non-canonical"))
+#### end copy of pre-experiment code #####
+
+metadata<-d
+
+```
+
+This document responds to some questions raised by reviewers during the review process. You will need to get the private metadata csv file from the BabbleCor authors (and our data) in order to reproduce these results.
+
+
+The reviewers expressed some confusion as to why we used the exclusion criteria that we used. Our main purpose was to create a homogeneous sample of participants in order to remove potential confounds. However, at the request of the reviewers, we include some analyses here that don't exclude based on the sociodemographic information collected.
+
+Firstly, we can run the analyses again without any exclusion criteria. The full results are below for the reader to examine but the overall conclusions are the same as those with exclusions reported in the paper.
+
+```{r}
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+agg<-aggregate(correct~phase*subject_ID, data = d, mean)
+t.test(x = subset(agg,agg$phase=="Age")$correct, mu = 1/3)
+t.test(x = subset(agg,agg$phase=="Language")$correct, mu = 1/3)
+t.test(x = subset(agg,agg$phase=="Sex")$correct, mu = 1/3)
+
+###### Testing the Age data #######
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+
+###### Testing the Language data #######
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+
+###### Testing the Sex data #######
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+```
+
+Next we ran the same analyses but excluding those who failed our attention check, audio check, or gave negligent responses (gave the same response for an entire phase of trials). Again, the full results are below but the conclusions are the same as before.
+
+```{r}
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+sum_data <- read.csv(here::here("data","summarized_data.csv"))
+attention_exc<-unique(subset(sum_data,sum_data$n_attention_checks<=5)$subject_ID)
+audio_exc<-unique(subset(sum_data,sum_data$n_audio_checks<=5)$subject_ID)
+neglig_exc<-unique(subset(sum_data,sum_data$var_sex<=5 & sum_data$var_lang<=5 & sum_data$var_age<=5)$subject_ID)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# exclude those who failed our attention check and audio check criteria
+d <- d[d$subject_ID%in%attention_exc, ]
+d <- d[d$subject_ID%in%audio_exc, ]
+# exclude those who clicked the same button for an entire experimental phase
+d <- d[d$subject_ID%in%neglig_exc, ]
+
+# d <- d[d$gender %in% c("Female", "Male"), ]
+# d <- d[d$country %in% c("Canada", "USA"), ]
+# d <- d[d$eng_first == "Yes", ]
+# d <- d[d$know_corp_lang == "None", ]
+
+
+agg<-aggregate(correct~phase*subject_ID, data = d, mean)
+t.test(x = subset(agg,agg$phase=="Age")$correct, mu = 1/3)
+t.test(x = subset(agg,agg$phase=="Language")$correct, mu = 1/3)
+t.test(x = subset(agg,agg$phase=="Sex")$correct, mu = 1/3)
+
+###### Testing the Age data #######
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Age"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+
+###### Testing the Language data #######
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+
+###### Testing the Sex data #######
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+```
+
+Finally, we ran the some analyses but excluding based on the sociodemographic information when it made sense to do so. Once again, the full results are below but the conclusions are the same as before.
+
+Here is the suggested analysis of the sex data with only the gender based exclusion criteria:
+
+```{r}
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+sum_data <- read.csv(here::here("data","summarized_data.csv"))
+attention_exc<-unique(subset(sum_data,sum_data$n_attention_checks<=5)$subject_ID)
+audio_exc<-unique(subset(sum_data,sum_data$n_audio_checks<=5)$subject_ID)
+neglig_exc<-unique(subset(sum_data,sum_data$var_sex<=5 & sum_data$var_lang<=5 & sum_data$var_age<=5)$subject_ID)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# exclude those who failed our attention check and audio check criteria
+d <- d[d$subject_ID%in%attention_exc, ]
+d <- d[d$subject_ID%in%audio_exc, ]
+# exclude those who clicked the same button for an entire experimental phase
+d <- d[d$subject_ID%in%neglig_exc, ]
+
+d <- d[d$gender %in% c("Female", "Male"), ]
+# d <- d[d$country %in% c("Canada", "USA"), ]
+# d <- d[d$eng_first == "Yes", ]
+# d <- d[d$know_corp_lang == "None", ]
+
+agg<-aggregate(correct~phase*subject_ID, data = d, mean)
+#t.test(x = subset(agg,agg$phase=="Age")$correct, mu = 1/3)
+#t.test(x = subset(agg,agg$phase=="Language")$correct, mu = 1/3)
+t.test(x = subset(agg,agg$phase=="Sex")$correct, mu = 1/3)
+
+# testing the sex data
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+```
+
+We also ran the analyses on the language data while only excluding those who knew any of the corpus languages with the same results as before:
+
+```{r}
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+sum_data <- read.csv(here::here("data","summarized_data.csv"))
+attention_exc<-unique(subset(sum_data,sum_data$n_attention_checks<=5)$subject_ID)
+audio_exc<-unique(subset(sum_data,sum_data$n_audio_checks<=5)$subject_ID)
+neglig_exc<-unique(subset(sum_data,sum_data$var_sex<=5 & sum_data$var_lang<=5 & sum_data$var_age<=5)$subject_ID)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# exclude those who failed our attention check and audio check criteria
+d <- d[d$subject_ID%in%attention_exc, ]
+d <- d[d$subject_ID%in%audio_exc, ]
+# exclude those who clicked the same button for an entire experimental phase
+d <- d[d$subject_ID%in%neglig_exc, ]
+
+# d <- d[d$gender %in% c("Female", "Male"), ]
+# d <- d[d$country %in% c("Canada", "USA"), ]
+# d <- d[d$eng_first == "Yes", ]
+d <- d[d$know_corp_lang == "list()", ]
+
+agg<-aggregate(correct~phase*subject_ID, data = d, mean)
+#t.test(x = subset(agg,agg$phase=="Age")$correct, mu = 1/3)
+t.test(x = subset(agg,agg$phase=="Language")$correct, mu = 1/3)
+#t.test(x = subset(agg,agg$phase=="Sex")$correct, mu = 1/3)
+
+# testing the sex data
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model1)
+
+# Adding level 1 predictors: childcare & caregiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model2)
+
+# Compare two models
+anova(model1,model2)
+
+#additional model with only childcare
+
+model4<- glmer(correct~1+childcare+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model4)
+
+#compare to baseline model
+anova(model1,model4)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(d,d$phase=="Language"),
+               family = binomial(link=logit))
+summary(model3)
+
+# Compare two models
+anova(model2,model3)
+```

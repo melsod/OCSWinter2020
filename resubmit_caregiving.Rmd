@@ -1,0 +1,159 @@
+---
+title: "Resubmit Caregiving"
+output: pdf_document
+---
+
+
+```{r include=F}
+# will need the private_metadata from the authors
+library(plyr)
+library(here)
+library(tidyverse)
+
+# read in the private metat data
+d<-read.csv(here::here("private_metadata.csv"))
+
+### same code as in pre-experiment to make unique IDs ###
+# remove the - sign. It causes problems later
+d$corpus<-revalue(d$corpus, c("Casillas-Yeli"="CasillasYeli"))
+#add a column called with a unique id (the original child id pasted together with the corpus)
+d <- d %>% mutate(unique_id = paste0(child_ID, corpus))
+#get rid of data from the warlaumont corpus
+d <- d %>% filter(corpus != c("Warlaumont"))
+#make a new column with the language
+d <- d %>% mutate(language = ifelse(corpus == "Seedlings",
+                                    "English",
+                                    "Non-English"))
+#make a categorical age variable based on 07, 8-18, and 19-36 groupings
+d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7,
+                                      "0-7",
+                                      ifelse(age_mo_round <= 18,
+                                             "8-18",
+                                             "19-36")))
+#make grouping variable for age-language question
+d <- d %>% mutate(age_language = paste0(age_groups, language))
+#keep only canonical and non-canonical
+d <- d %>% filter(Answer %in% c("Canonical", "Non-canonical"))
+#### end copy of pre-experiment code #####
+
+metadata<-d
+
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# attatch baby data to trial data
+d$stim_age<-rep(0,nrow(d))
+for(i in 1:nrow(d)){
+  baby_data<-subset(metadata,metadata$clip_ID==d$clipID[i])
+  d$stim_age[i]<-baby_data$age_mo_round # age in months
+  d$age_error[i]<-min(c(abs(d$stim_age[i]-7.5),abs(d$stim_age[i]-18.5))) #absolute difference between age and closest cut off
+}
+```
+
+This document responds to some questions raised by reviewers during the review process. You will need to get the private metadata csv file from the BabbleCor authors (and our data) in order to reproduce these results.
+
+
+The reviewers expressed surprise at the lack of significant results in the analysis of caregiving experience so we examined the issue further.
+
+Firstly we present the distribution of caregiving and childcare experience reported by the participants. We also present another histogram eliminating those with 0 months experience.
+
+
+```{r}
+sum_data <- read.csv(here::here("data","summarized_data.csv"))
+
+ggplot(sum_data, aes(caregiver))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience")+
+  theme_bw()
+
+ggplot(subset(sum_data,sum_data$caregiver>0), aes(caregiver))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience",subtitle = "Those with 0 months removed")+
+  theme_bw()
+
+ggplot(sum_data, aes(childcare))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience")+
+  theme_bw()
+
+ggplot(subset(sum_data,sum_data$childcare>0), aes(childcare))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience",subtitle = "Those with 0 months removed")+
+  theme_bw()
+```
+
+The above histograms confirm the reviewers suspicions that participants generally had little to no childcare or caregiving experience. So on the suggestion of the reviewers we performed a categorical split.
+
+We analyzed the results from a binomial regression (to be analogous to the methods reported in the manuscript) to test whether there was a difference between those with some childcare or caregiving experience and those with none on any of the three main questions (whether participants could identify the Sex, Language, or Age of the infants). To be complete we ran every possible categorical split and found that none of them found significant results (alpha = 0.01) however there were some possible differences between those with some experience and none on the Age question (p < 0.05) if we were to accept the common alpha rate.
+
+```{r}
+library(lme4)
+# tested every level of the categorical split and found no significance (alpha = 0.01). Lowest p = 0.03
+save<-rep(0,3*100)
+for(i in 1:100){
+  X<-i
+  # define any experience as more than X
+  d$anyExp<-(d$childcare>X | d$caregiver>X)
+  # sex any experience categorical model instead of continuous variable
+  model_AnyExp<- glmer(correct~1+anyExp+(1|subject_ID),
+                     data = subset(d,
+                                   d$gender%in%c("Male","Female") & d$phase=="Sex"),
+                     family = binomial(link=logit))
+  sum<-summary(model_AnyExp)
+  #sum
+  save[((i-1)*3)+1]<-sum$coefficients[2,4]
+  # language any experience categorical model instead of continuous variable
+  model_AnyExp<- glmer(correct~1+anyExp+(1|subject_ID),
+                     data = subset(d,
+                                   d$gender%in%c("Male","Female") & d$phase=="Language"),
+                     family = binomial(link=logit))
+  sum<-summary(model_AnyExp)
+  save[((i-1)*3)+2]<-sum$coefficients[2,4]
+  #sum
+  # age any experience categorical model instead of continuous variable
+  model_AnyExp<- glmer(correct~1+anyExp+(1|subject_ID),
+                     data = subset(d,
+                                   d$gender%in%c("Male","Female") & d$phase=="Age"),
+                     family = binomial(link=logit))
+  sum<-summary(model_AnyExp)
+  save[((i-1)*3)+3]<-sum$coefficients[2,4]
+  #print(sum)
+}
+res<-matrix(save,ncol = 3,byrow = T)
+colnames(res)<-c("Sex","Language","Age")
+library(knitr)
+kable(res, caption = "P-values of the 'any experience' variable for each level of categorical split")
+```
+
+After running the logistic regression we decided to run a simpler analysis by comparing participants average accuracy between groups with some and "no" experience in the same way as before with using a Welch's t-test. Results indicate that there is some difference between those with some childcare or caregiving experience and those with none in identifying the age of infants.
+
+```{r}
+save<-matrix(0,nrow = 99,ncol = 4)
+for(i in 0:98){
+  X<-i
+  sum_data$anyExp<-(sum_data$childcare>X | sum_data$caregiver>X)
+  t<-t.test(p_cor_sex~anyExp,data = sum_data)
+  save[i+1,2]<-t$p.value
+  t<-t.test(p_cor_lang~anyExp,data = sum_data)
+  save[i+1,3]<-t$p.value
+  t<-t.test(p_cor_age~anyExp,data = sum_data)
+  save[i+1,4]<-t$p.value
+}
+save[,1]<-0:98
+colnames(save)<-c("Split at","Sex","Language","Age")
+kable(save, caption = "P-values of the t-test comparing accuracy for each level of categorical split")
+```
