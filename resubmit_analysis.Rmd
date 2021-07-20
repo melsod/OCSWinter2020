@@ -1,0 +1,119 @@
+---
+title: "Resubmit_Analysis"
+author: "Bradley Smith"
+date: "20/07/2021"
+output: pdf_document
+---
+
+```{r include=F}
+# will need the private_metadata from the authors
+library(plyr)
+library(here)
+library(tidyverse)
+
+# read in the private metat data
+d<-read.csv(here::here("private_metadata.csv"))
+
+### same code as in pre-experiment to make unique IDs ###
+# remove the - sign. It causes problems later
+d$corpus<-revalue(d$corpus, c("Casillas-Yeli"="CasillasYeli"))
+#add a column called with a unique id (the original child id pasted together with the corpus)
+d <- d %>% mutate(unique_id = paste0(child_ID, corpus))
+#get rid of data from the warlaumont corpus
+d <- d %>% filter(corpus != c("Warlaumont"))
+#make a new column with the language
+d <- d %>% mutate(language = ifelse(corpus == "Seedlings",
+                                    "English",
+                                    "Non-English"))
+#make a categorical age variable based on 07, 8-18, and 19-36 groupings
+d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7,
+                                      "0-7",
+                                      ifelse(age_mo_round <= 18,
+                                             "8-18",
+                                             "19-36")))
+#make grouping variable for age-language question
+d <- d %>% mutate(age_language = paste0(age_groups, language))
+#keep only canonical and non-canonical
+d <- d %>% filter(Answer %in% c("Canonical", "Non-canonical"))
+#### end copy of pre-experiment code #####
+
+metadata<-d
+
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# attatch baby data to trial data
+d$stim_age<-rep(0,nrow(d))
+for(i in 1:nrow(d)){
+  baby_data<-subset(metadata,metadata$clip_ID==d$clipID[i])
+  d$stim_age[i]<-baby_data$age_mo_round # age in months
+  d$age_error[i]<-min(c(abs(d$stim_age[i]-7.5),abs(d$stim_age[i]-18.5))) #absolute difference between age and closest cut off
+}
+```
+
+This document responds to several question raised by reviewers during the review process. You will need to get the private metadata csv file from the BabbleCor authors (and our data) in order to reproduce these results.
+
+
+Firstly, the reviewers expressed interest in whether babies in the age condition were more likely to be misclassified in the nieghboring bin (and therefore "close" in their incorrect guesses). We examined this graphically.
+
+Firstly we can 
+
+```{r}
+# subset to one subjects data to see actual number of babies used in stimuli
+oneSub<-subset(d,d$subject_ID==d$subject_ID[1])
+
+# plot age by bin
+ggplot(subset(oneSub,oneSub$phase=="Age"), aes(stim_age))+
+  geom_histogram(binwidth = .5)+
+  facet_grid("stim_ageGroup")+
+  geom_vline(xintercept=c(7.5,18.5))+
+  xlab("Age of Child (Months)")+
+  ylab("Number of Children")+
+  labs(title = "Age of Children Separated by Age Bins")+
+  theme_bw()
+
+# plot resopnse by bin
+ggplot(subset(d,d$phase=="Age"), aes(button_pressed,fill = button_pressed))+
+  geom_histogram(binwidth = .5)+
+  scale_x_continuous(name = "Button Pressed", breaks = c(0,1,2),labels = c("0-7","8-18","19-36"))+
+  facet_grid("stim_ageGroup")+
+  ylab("Number of Responses")+
+  labs(title = "Button Pressed Separated by Age Bins")+
+  theme_bw()
+
+# plot response by age
+ggplot(subset(d,d$phase=="Age"),aes(fill = as.factor(button_pressed), x=stim_age))+
+  geom_histogram(binwidth = .5)+
+  facet_grid("stim_ageGroup")+
+  geom_vline(xintercept=c(7.5,18.5))+
+  xlab("Age of Child (Months)")+
+  ylab("Number of Responses")+
+  labs(title = "Age Responses to Each Infant Age Separated by Age Bins")+
+  scale_fill_discrete(labels = c("0-7","8-18","19-36"))+
+  guides(fill=guide_legend(title = NULL))+
+  theme_bw()
+
+# make dummy variable for lines
+dummy <- data.frame(phase = c("Age", "Language","Sex"), Z = c(1/3,1/2,1/2))
+dummy$X<-factor(dummy$X)
+
+# plot percent correct for each age and question type
+ggplot(d,aes(y=correct,x=stim_age,fill=phase))+
+  geom_bar(position = "dodge", stat = "summary", fun = "mean",show.legend = F)+
+  facet_grid("phase")+
+  geom_hline(data = dummy, aes(yintercept=Z),col = "red")+
+  geom_vline(xintercept=c(7.5,18.5))+
+  xlab("Age of Child (Months)")+
+  ylab("Percent Correct")+
+  labs(title = "Percent Correct for Each Infant Age Separated by Question Type",caption = "Black lines separate age bins; red lines indicate chance")+
+  scale_fill_discrete(labels = c("0-7","8-18","19-36"))+
+  guides(fill=guide_legend(title = NULL))+
+  theme_bw()
+
+``
