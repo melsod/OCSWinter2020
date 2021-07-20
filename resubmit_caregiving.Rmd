@@ -101,10 +101,31 @@ The above histograms confirm the reviewers suspicions that participants generall
 We analyzed the results from a binomial regression (to be analogous to the methods reported in the manuscript) to test whether there was a difference between those with some childcare or caregiving experience and those with none on any of the three main questions (whether participants could identify the Sex, Language, or Age of the infants). To be complete we ran every possible categorical split and found that none of them found significant results (alpha = 0.01) however there were some possible differences between those with some experience and none on the Age question (p < 0.05) if we were to accept the common alpha rate.
 
 ```{r}
+# exclude the participants that we need to
+sum_data <- read.csv(here::here("data","summarized_data.csv"))
+attention_exc<-unique(subset(sum_data,sum_data$n_attention_checks<=5)$subject_ID)
+audio_exc<-unique(subset(sum_data,sum_data$n_audio_checks<=5)$subject_ID)
+neglig_exc<-unique(subset(sum_data,sum_data$var_sex<=5 & sum_data$var_lang<=5 & sum_data$var_age<=5)$subject_ID)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# exclude those who failed our attention check and audio check criteria
+d <- d[d$subject_ID%in%attention_exc, ]
+d <- d[d$subject_ID%in%audio_exc, ]
+# exclude those who clicked the same button for an entire experimental phase
+d <- d[d$subject_ID%in%neglig_exc, ]
+# exclude those who responded other in gender and country
+d <- d[d$gender %in% c("Female", "Male"), ]
+d <- d[d$country %in% c("Canada", "USA"), ]
+# exclude those who speak a language other than english
+d <- d[d$eng_first == "Yes", ]
+d <- d[d$know_corp_lang == "list()", ]
+
 library(lme4)
 # tested every level of the categorical split and found no significance (alpha = 0.01). Lowest p = 0.03
 save<-rep(0,3*100)
-for(i in 1:100){
+for(i in 1:3){
   X<-i
   # define any experience as more than X
   d$anyExp<-(d$childcare>X | d$caregiver>X)

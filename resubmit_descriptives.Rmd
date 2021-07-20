@@ -1,0 +1,134 @@
+---
+title: "Resubmit Descriptives"
+output: pdf_document
+---
+
+
+```{r include=F}
+# will need the private_metadata from the authors
+library(plyr)
+library(here)
+library(tidyverse)
+
+# read in the private metat data
+d<-read.csv(here::here("private_metadata.csv"))
+
+### same code as in pre-experiment to make unique IDs ###
+# remove the - sign. It causes problems later
+d$corpus<-revalue(d$corpus, c("Casillas-Yeli"="CasillasYeli"))
+#add a column called with a unique id (the original child id pasted together with the corpus)
+d <- d %>% mutate(unique_id = paste0(child_ID, corpus))
+#get rid of data from the warlaumont corpus
+d <- d %>% filter(corpus != c("Warlaumont"))
+#make a new column with the language
+d <- d %>% mutate(language = ifelse(corpus == "Seedlings",
+                                    "English",
+                                    "Non-English"))
+#make a categorical age variable based on 07, 8-18, and 19-36 groupings
+d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7,
+                                      "0-7",
+                                      ifelse(age_mo_round <= 18,
+                                             "8-18",
+                                             "19-36")))
+#make grouping variable for age-language question
+d <- d %>% mutate(age_language = paste0(age_groups, language))
+#keep only canonical and non-canonical
+d <- d %>% filter(Answer %in% c("Canonical", "Non-canonical"))
+#### end copy of pre-experiment code #####
+
+metadata<-d
+
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# attatch baby data to trial data
+d$stim_age<-rep(0,nrow(d))
+for(i in 1:nrow(d)){
+  baby_data<-subset(metadata,metadata$clip_ID==d$clipID[i])
+  d$stim_age[i]<-baby_data$age_mo_round # age in months
+  d$age_error[i]<-min(c(abs(d$stim_age[i]-7.5),abs(d$stim_age[i]-18.5))) #absolute difference between age and closest cut off
+}
+```
+
+This document is created to produce some descriptive statistics and graphical representations of our data. Hopefully the graphs are self explanatory as they are produced and not explained here.
+
+```{r}
+# exclude the participants that we need to
+sum_data <- read.csv(here::here("data","summarized_data.csv"))
+attention_exc<-unique(subset(sum_data,sum_data$n_attention_checks<=5)$subject_ID)
+audio_exc<-unique(subset(sum_data,sum_data$n_audio_checks<=5)$subject_ID)
+neglig_exc<-unique(subset(sum_data,sum_data$var_sex<=5 & sum_data$var_lang<=5 & sum_data$var_age<=5)$subject_ID)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# exclude those who failed our attention check and audio check criteria
+d <- d[d$subject_ID%in%attention_exc, ]
+d <- d[d$subject_ID%in%audio_exc, ]
+# exclude those who clicked the same button for an entire experimental phase
+d <- d[d$subject_ID%in%neglig_exc, ]
+# exclude those who responded other in gender and country
+d <- d[d$gender %in% c("Female", "Male"), ]
+d <- d[d$country %in% c("Canada", "USA"), ]
+# exclude those who speak a language other than english
+d <- d[d$eng_first == "Yes", ]
+d <- d[d$know_corp_lang == "list()", ]
+
+sum_data<-subset(sum_data,sum_data$subject_ID%in%unique(d$subject_ID))
+
+ggplot(sum_data, aes(age))+
+  geom_histogram(binwidth = .5)+
+  xlab("Age of Participants")+
+  ylab("Count")+
+  labs(title = "Histogram of Participant Age")+
+  theme_bw()
+
+ggplot(sum_data, aes(gender))+
+  geom_histogram(stat = "count")+
+  xlab("Age of Participants")+
+  ylab("Count")+
+  labs(title = "Histogram of Participant Gender")+
+  theme_bw()
+
+ggplot(sum_data, aes(country))+
+  geom_histogram(stat = "count")+
+  xlab("Age of Participants")+
+  ylab("Count")+
+  labs(title = "Histogram of Participant Gender")+
+  theme_bw()
+
+
+ggplot(sum_data, aes(caregiver))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience")+
+  theme_bw()
+
+ggplot(subset(sum_data,sum_data$caregiver>0), aes(caregiver))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience",subtitle = "Those with 0 months removed")+
+  theme_bw()
+
+ggplot(sum_data, aes(childcare))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience")+
+  theme_bw()
+
+ggplot(subset(sum_data,sum_data$childcare>0), aes(childcare))+
+  geom_histogram(binwidth = .5)+
+  xlab("Cargiving Experience (Months)")+
+  ylab("Count")+
+  labs(title = "Histogram of Caregiving Experience",subtitle = "Those with 0 months removed")+
+  theme_bw()
+```
