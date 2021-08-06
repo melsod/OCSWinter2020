@@ -296,3 +296,37 @@ summary(model3)
 
 # Compare two models
 anova(model2,model3)
+
+#`````````````````````````````````````````````````````````````````````````````````````````````````````````````
+# identify infant sex (at request of reviewers)
+
+# Random intercept Model: Baseline
+library(lme4)
+model1<- glmer(correct~1+(1|subject_ID),
+               data = subset(tidy_data,
+                             tidy_data$gender%in%c("Male","Female") & tidy_data$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model1)
+
+
+# Adding level 1 predictors: childcare & caredgiver
+model2<- glmer(correct~1+childcare+caregiver+(1|subject_ID),
+               data = subset(tidy_data,
+                             tidy_data$gender%in%c("Male","Female") & tidy_data$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model2)
+
+
+# Compare two models
+anova(model1,model2)
+
+# Adding level 2 predictor: Participant's gender
+model3<- glmer(correct~1+childcare+caregiver+gender+(1|subject_ID),
+               data = subset(tidy_data,
+                             tidy_data$gender%in%c("Male","Female") & tidy_data$phase=="Sex"),
+               family = binomial(link=logit))
+summary(model3)
+
+
+# Compare two models
+anova(model2,model3)
