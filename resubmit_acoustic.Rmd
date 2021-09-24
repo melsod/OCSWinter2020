@@ -1,0 +1,101 @@
+---
+title: "Resubmit Acoustic"
+output: pdf_document
+---
+
+
+```{r include=F, warning=FALSE}
+# will need the private_metadata from the authors
+library(plyr)
+library(here)
+library(tidyverse)
+
+# read in the private metat data
+d<-read.csv(here::here("private_metadata.csv"))
+
+### same code as in pre-experiment to make unique IDs ###
+# remove the - sign. It causes problems later
+d$corpus<-revalue(d$corpus, c("Casillas-Yeli"="CasillasYeli"))
+#add a column called with a unique id (the original child id pasted together with the corpus)
+d <- d %>% mutate(unique_id = paste0(child_ID, corpus))
+#get rid of data from the warlaumont corpus
+d <- d %>% filter(corpus != c("Warlaumont"))
+#make a new column with the language
+d <- d %>% mutate(language = ifelse(corpus == "Seedlings",
+                                    "English",
+                                    "Non-English"))
+#make a categorical age variable based on 07, 8-18, and 19-36 groupings
+d <- d %>% mutate(age_groups = ifelse(age_mo_round <= 7,
+                                      "0-7",
+                                      ifelse(age_mo_round <= 18,
+                                             "8-18",
+                                             "19-36")))
+#make grouping variable for age-language question
+d <- d %>% mutate(age_language = paste0(age_groups, language))
+#keep only canonical and non-canonical
+d <- d %>% filter(Answer %in% c("Canonical", "Non-canonical"))
+#### end copy of pre-experiment code #####
+
+metadata<-d
+
+##### TRIAL DATA #####
+# get data before exclusions
+library(here)
+d <- read.csv(here::here("data","trial_data.csv"))
+library(ggplot2)
+
+# refactor the group so the order is correct in the graphs
+d$stim_ageGroup<-factor(d$stim_ageGroup,levels = c("0-7","8-18","19-36"))
+
+# # attatch baby data to trial data
+# d$stim_age<-rep(0,nrow(d))
+# for(i in 1:nrow(d)){
+#   baby_data<-subset(metadata,metadata$clip_ID==d$clipID[i])
+#   d$stim_age[i]<-baby_data$age_mo_round # age in months
+#   d$age_error[i]<-min(c(abs(d$stim_age[i]-7.5),abs(d$stim_age[i]-18.5))) #absolute difference between age and closest cut off
+# }
+```
+
+This document responds to some questions raised by reviewers during the review process. You will need to get the private metadata csv file from the BabbleCor authors (and our data) in order to reproduce these results.
+
+The reviewers expressed interest in an acoustic analysis of the baby babbling. We analyzed the audio clips used in the experiment to find their exact duration, f0 midpoint, mean pitch, f1 midpoint, f2 midpoint, and intensity midpoint. Below we connect the acoustic data to our experimental data and look for acoustic differences between the groups of interest.
+
+```{r}
+# subset to one subjects data to cut our data frame to one iteration of the experiment
+oneSub<-subset(d,d$subject_ID==d$subject_ID[1])
+
+# plot age by bin
+# ggplot(subset(oneSub,oneSub$phase=="Age"), aes(stim_age))+
+#   geom_histogram(binwidth = .5)+
+#   facet_grid("stim_ageGroup")+
+#   geom_vline(xintercept=c(7.5,18.5))+
+#   xlab("Age of Child (Months)")+
+#   ylab("Number of Children")+
+#   labs(title = "Age of Children Separated by Age Bins")+
+#   theme_bw()
+
+# read in the acoustic data
+library(readxl)
+acoustic_data_age_language<-read_excel(here::here("BabbleAcoustic","Acoustic_characteristics_dataset_age_language.xlsx"))
+acoustic_data_sex<-read_excel(here::here("BabbleAcoustic","Acoustic_characteristics_dataset_sex.xlsx"))
+
+# make column names consistent
+colnames(acoustic_data_sex)<-colnames(acoustic_data_age_language)
+
+# combine the data and remove duplicates (4 duplicated sound files, used once in the age language and once in the sex analysis)
+acoustic_data<-rbind(acoustic_data_age_language,acoustic_data_sex)
+acoustic_data<-acoustic_data[!duplicated(acoustic_data$Filename),]
+
+oneSub$duration<-rep(0,nrow(oneSub))
+oneSub$f0<-rep(0,nrow(oneSub))
+oneSub$meanpitch<-rep(0,nrow(oneSub))
+oneSub$f1<-rep(0,nrow(oneSub))
+oneSub$f2<-rep(0,nrow(oneSub))
+oneSub$intensitymidpoint<-rep(0,nrow(oneSub))
+
+
+for(i in 2:nrow(oneSub)){
+  clip_acoustic_data<-subset(acoustic_data,paste0(0,acoustic_data$Filename,".wav")==paste0(oneSub[i,]$clipID))
+  oneSub[i,]$duration<-clip_acoustic_data$duration
+}
+```
