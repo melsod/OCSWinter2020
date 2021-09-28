@@ -10,6 +10,32 @@
 # This script was first modified by Dan McCloy (drmccloy@uw.edu) in December 2011 and
 # later modified to add intensity and labels from other tiers by Esther Le GrÃ©zause (elg1@uw.edu) in May 2016.
 
-analyzing_pitch_with_a_textgrid
-##Script from praat manual Boersma & Weenink 2020
-this script was used in it's original form and was used to go over each set of .wav and .Textgrid manually. TS
+3 files that failed the scripts, were added manually. The pitch and formant settings were set to repeat the setting for the script. They are
+as follows:
+
+Pitch range settings:
+positive Minimum_pitch_(Hz) 75
+positive Maximum_pitch_(Hz) 400
+Analysis method - autocorrelation
+positive Pitch_time_step 0.01
+Formant settings:
+Maximum formant (Hz) 2500
+Number of formants: 2
+positive Time_step 0.01
+real Preemphasis_from_(Hz) 50
+Pitch analysis parameters
+positive Pitch_time_step 0.01
+positive Window_length_(s) 0.025
+
+Get duration (midpoint = (start + end) / 2)
+f1_50 = Get value at time
+f2_50 = Get value at time
+f0_50 = Get value at time
+
+They are the following three files:
+
+1.0598745689
+2.0875516069
+3.0922328882
+
+
