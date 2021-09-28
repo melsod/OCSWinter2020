@@ -10,8 +10,7 @@
 # This script was first modified by Dan McCloy (drmccloy@uw.edu) in December 2011 and
 # later modified to add intensity and labels from other tiers by Esther Le GrÃ©zause (elg1@uw.edu) in May 2016.
 
-3 files that failed the scripts, were added manually. The pitch and formant settings were set to repeat the setting for the script. They are
-as follows:
+3 files that failed the scripts, were added manually. The pitch and formant settings were set to repeat the setting for the script listed above (f0_f1_f2_intensity). They are as follows:
 
 Pitch range settings:
 positive Minimum_pitch_(Hz) 75
@@ -27,15 +26,16 @@ Pitch analysis parameters
 positive Pitch_time_step 0.01
 positive Window_length_(s) 0.025
 
-Get duration (midpoint = (start + end) / 2)
+Duration = end - start
+Midpoint = (start + end) / 2
 f1_50 = Get value at time
 f2_50 = Get value at time
 f0_50 = Get value at time
 
 They are the following three files:
 
-1.0598745689
-2.0875516069
-3.0922328882
+1) 0598745689
+2) 0875516069
+3) 0922328882
 
 
