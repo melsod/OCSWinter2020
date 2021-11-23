@@ -1,8 +1,7 @@
 ---
-title: "Resubmit_Analysis"
-author: "Bradley Smith"
-date: "20/07/2021"
+title: "Acoustic Analysis"
 output: pdf_document
+
 ---
 
 ```{r include=F}
@@ -10,6 +9,12 @@ output: pdf_document
 library(plyr)
 library(here)
 library(tidyverse)
+library(ggplot2)
+library(readxl)
+library(pander)
+library(mice)
+library(mitml)
+library(lme4)
 
 # read in the private metat data
 d<-read.csv(here::here("private_metadata.csv"))
@@ -55,65 +60,589 @@ for(i in 1:nrow(d)){
   d$stim_age[i]<-baby_data$age_mo_round # age in months
   d$age_error[i]<-min(c(abs(d$stim_age[i]-7.5),abs(d$stim_age[i]-18.5))) #absolute difference between age and closest cut off
 }
+
+# read in the results from the acoustic analysis on all audio files (including some excluded from the experiment)
+audio_data <- read_excel("BabbleAcoustic/Acoustic_characteristics_dataset_age_language.xlsx")
+audio_data2<- read_excel("BabbleAcoustic/Acoustic_characteristics_dataset_sex.xlsx",)
+colnames(audio_data2)<-colnames(audio_data)
+# combine into one dataset
+audio_data<-rbind(audio_data,audio_data2)
+
+# read in the age_language stimuli (as a string)
+age_lang_stimuli_string<-paste(readLines("stimuli/age_language_test_stimuli.js"),collapse="")
+# pull out the audio file names from the string (get a list of all audio files actually used)
+age_lang_audio_file_list<-str_sub(string = age_lang_stimuli_string,start = str_locate_all(age_lang_stimuli_string,".wav")[[1]][,1]-10,end = str_locate_all(age_lang_stimuli_string,".wav")[[1]][,2])
+
+# read in the sex stimuli (as a string)
+sex_stimuli_string<-paste(readLines("stimuli/sex_test_stimuli.js"),collapse="")
+# pull out the audio file names from the string (get a list of all audio files actually used)
+sex_audio_file_list<-str_sub(string = sex_stimuli_string,start = str_locate_all(sex_stimuli_string,".wav")[[1]][,1]-10,end = str_locate_all(sex_stimuli_string,".wav")[[1]][,2])
+
+# make list of stimuli actually used
+audio_files_used<-c(age_lang_audio_file_list,sex_audio_file_list)
+
+# confirm that all the used audio files are in the audio_data
+#all(audio_files_used%in%paste0("0",audio_data$Filename,".wav"))
+
+# attach the babies unique ID to the audio_data dataframe, and other data
+for(i in 1:nrow(audio_data)){
+  baby_data<-subset(metadata,metadata$clip_ID==paste0("0",audio_data$Filename[i],".wav"))
+  audio_data$stim_ID[i]<-baby_data$unique_id
+  audio_data$age_mo_round[i]<-baby_data$age_mo_round
+  audio_data$gender[i]<-baby_data$child_gender
+  audio_data$corpus[i]<-baby_data$corpus
+  audio_data$language[i]<-baby_data$language
+  audio_data$age_group[i]<-baby_data$age_groups
+}
+
+# make better column names
+colnames(audio_data)<-c("Filename","duration","textgrdlabel","f0","f1","f2","intens","stim_ID","age_mo_round","gender","corpus","language","age_group")
+
+# confirm data in the right format
+audio_data$f0<-as.numeric(audio_data$f0)
+audio_data$f1<-as.numeric(audio_data$f1)
+audio_data$f2<-as.numeric(audio_data$f2)
+audio_data$intens<-as.numeric(audio_data$intens)
+audio_data$duration<-as.numeric(audio_data$duration)
+audio_data$age_mo_round<-as.numeric(audio_data$age_mo_round)
+
+#audio_data$Filename<-as.factor(audio_data$Filename)
+audio_data$stim_ID<-as.factor(audio_data$stim_ID)
+audio_data$gender<-as.factor(audio_data$gender)
+audio_data$corpus<-as.factor(audio_data$corpus)
+audio_data$language<-as.factor(audio_data$language)
+audio_data$age_group<-as.factor(audio_data$age_group)
+
+# subset to the audio data for the age_lang questions
+age_lang_sub_audio<-subset(audio_data,paste0("0",audio_data$Filename,".wav")%in%age_lang_audio_file_list)
+# remove duplicates (because some files were used in both age_lang and sex)
+age_lang_sub_audio<-age_lang_sub_audio[!duplicated(age_lang_sub_audio$Filename),]
+
+# subset to the audio data for the sex questions
+sex_sub_audio<-subset(audio_data,paste0("0",audio_data$Filename,".wav")%in%sex_audio_file_list)
+# remove duplicates (because some files were used in both age_lang and sex)
+sex_sub_audio<-sex_sub_audio[!duplicated(sex_sub_audio$Filename),]
+
 ```
 
-This document responds to several question raised by reviewers during the review process. You will need to get the private metadata csv file from the BabbleCor authors (and our data) in order to reproduce these results.
+This document responds to questions raised by reviewers during the review process. You will need to get the private metadata csv file from the BabbleCor authors (and our data) in order to reproduce these results.
 
+This document reads in the results of an acoustic analysis and examines whether there are statistical differences on any of the f0, f1, f2, intensity, or duration measurements between the groups of babies as divided by the factors analyzed in the study.
 
-Firstly, the reviewers expressed interest in whether babies in the age condition were more likely to be misclassified in the nieghboring bin (and therefore "close" in their incorrect guesses). We examined this graphically.
+We first analyze the data with list-wise deletion for missing cases (when one of the acoustic features could not be calculated), and then test two methods of multiple imputation (random sample from observed values and predictive mean matching).
 
-Firstly we can 
+As can be seen below, there are no statistically significant differences on any of the measurements (for either the Age/Language stimuli or the Sex stimuli) in any of the different methods of analysis. It seems unlikely that differences in participants judgements were based on these acoustic features. 
+
+Note: the duration of audio clips does not reflect the duration of the original infant vocalizations. The BabbleCor clips were edited to be approximately ~400ms (under ~500ms).
+
+\newpage
+
+# List-wise Deletion
+
+## Analysis of the Sex Stimuli
+
+### f0 midpoint analysis
 
 ```{r}
-# subset to one subjects data to see actual number of babies used in stimuli
-oneSub<-subset(d,d$subject_ID==d$subject_ID[1])
+par(mfrow = c(1,2))
+boxplot(f0~gender,data = sex_sub_audio,
+        main="f0 Gender Anlysis (Raw Data)",
+        ylim = c(min(sex_sub_audio$f0,na.rm = T),
+                 max(sex_sub_audio$f0,na.rm = T)),
+        cex.main=0.75)
+boxplot(f0~gender,data = aggregate(f0~gender*stim_ID,data = sex_sub_audio,mean),
+        ylim = c(min(sex_sub_audio$f0,na.rm = T),
+                 max(sex_sub_audio$f0,na.rm = T)),
+        main = "f0 Gender Analysis (Participant Averages)",
+        cex.main=0.75)
+pander(summary(aov(f0~gender+Error(stim_ID), data = sex_sub_audio))[[1]])
+```
 
-# plot age by bin
-ggplot(subset(oneSub,oneSub$phase=="Age"), aes(stim_age))+
-  geom_histogram(binwidth = .5)+
-  facet_grid("stim_ageGroup")+
-  geom_vline(xintercept=c(7.5,18.5))+
-  xlab("Age of Child (Months)")+
-  ylab("Number of Children")+
-  labs(title = "Age of Children Separated by Age Bins")+
-  theme_bw()
+\newpage
 
-# plot resopnse by bin
-ggplot(subset(d,d$phase=="Age"), aes(button_pressed,fill = button_pressed))+
-  geom_histogram(binwidth = .5)+
-  scale_x_continuous(name = "Button Pressed", breaks = c(0,1,2),labels = c("0-7","8-18","19-36"))+
-  facet_grid("stim_ageGroup")+
-  ylab("Number of Responses")+
-  labs(title = "Button Pressed Separated by Age Bins")+
-  theme_bw()
+### f1 midpoint analysis
 
-# plot response by age
-ggplot(subset(d,d$phase=="Age"),aes(fill = as.factor(button_pressed), x=stim_age))+
-  geom_histogram(binwidth = .5)+
-  facet_grid("stim_ageGroup")+
-  geom_vline(xintercept=c(7.5,18.5))+
-  xlab("Age of Child (Months)")+
-  ylab("Number of Responses")+
-  labs(title = "Age Responses to Each Infant Age Separated by Age Bins")+
-  scale_fill_discrete(labels = c("0-7","8-18","19-36"))+
-  guides(fill=guide_legend(title = NULL))+
-  theme_bw()
+```{r}
 
-# make dummy variable for lines
-dummy <- data.frame(phase = c("Age", "Language","Sex"), Z = c(1/3,1/2,1/2))
-dummy$X<-factor(dummy$X)
+par(mfrow = c(1,2))
+boxplot(f1~gender,data = sex_sub_audio,main="f1 Gender Anlysis (Raw Data)",
+        ylim = c(min(sex_sub_audio$f1,na.rm = T),
+                 max(sex_sub_audio$f1,na.rm = T)),
+        cex.main=0.75)
+boxplot(f1~gender,data = aggregate(f1~gender*stim_ID,data = sex_sub_audio,mean),
+        ylim = c(min(sex_sub_audio$f1,na.rm = T),
+                 max(sex_sub_audio$f1,na.rm = T)),
+        main = "f1 Gender Analysis (Participant Averages)",
+        cex.main=0.75)
+pander(summary(aov(f1~gender+Error(stim_ID), data = sex_sub_audio))[[1]])
+```
 
-# plot percent correct for each age and question type
-ggplot(d,aes(y=correct,x=stim_age,fill=phase))+
-  geom_bar(position = "dodge", stat = "summary", fun = "mean",show.legend = F)+
-  facet_grid("phase")+
-  geom_hline(data = dummy, aes(yintercept=Z),col = "red")+
-  geom_vline(xintercept=c(7.5,18.5))+
-  xlab("Age of Child (Months)")+
-  ylab("Percent Correct")+
-  labs(title = "Percent Correct for Each Infant Age Separated by Question Type",caption = "Black lines separate age bins; red lines indicate chance")+
-  scale_fill_discrete(labels = c("0-7","8-18","19-36"))+
-  guides(fill=guide_legend(title = NULL))+
-  theme_bw()
+\newpage
 
-``
+### f2 midpoint analysis
+
+```{r}
+
+par(mfrow = c(1,2))
+boxplot(f2~gender,data = sex_sub_audio,main="f2 Gender Anlysis (Raw Data)",
+        ylim = c(min(sex_sub_audio$f2,na.rm = T),
+                 max(sex_sub_audio$f2,na.rm = T)),
+        cex.main=0.75)
+boxplot(f2~gender,data = aggregate(f2~gender*stim_ID,data = sex_sub_audio,mean),
+        ylim = c(min(sex_sub_audio$f2,na.rm = T),
+                 max(sex_sub_audio$f2,na.rm = T)),
+        main = "f2 Gender Analysis (Participant Averages)",
+        cex.main=0.75)
+pander(summary(aov(f2~gender+Error(stim_ID), data = sex_sub_audio))[[1]])
+
+```
+
+\newpage
+
+### intensity analysis
+
+```{r}
+par(mfrow = c(1,2))
+boxplot(intens~gender,data = sex_sub_audio,
+        main="intensity Gender Anlysis (Raw Data)",
+        ylim = c(min(sex_sub_audio$intens,na.rm = T),
+                 max(sex_sub_audio$intens,na.rm = T)),
+        cex.main=0.75)
+boxplot(intens~gender,data = aggregate(intens~gender*stim_ID,data = sex_sub_audio,mean),
+        ylim = c(min(sex_sub_audio$intens,na.rm = T),
+                 max(sex_sub_audio$intens,na.rm = T)),
+        main = "intensity Gender Analysis (Participant Averages)",
+        cex.main=0.75)
+pander(summary(aov(intens~gender+Error(stim_ID), data = sex_sub_audio))[[1]])
+```
+
+\newpage
+
+### duration midpoint analysis
+
+```{r}
+par(mfrow = c(1,2))
+boxplot(duration~gender,data = sex_sub_audio,
+        main="duration Gender Anlysis (Raw Data)",
+        ylim = c(min(sex_sub_audio$duration,na.rm = T),
+                 max(sex_sub_audio$duration,na.rm = T)),
+        cex.main=0.75)
+boxplot(duration~gender,data = aggregate(duration~gender*stim_ID,data = sex_sub_audio,mean),
+        ylim = c(min(sex_sub_audio$duration,na.rm = T),
+                 max(sex_sub_audio$duration,na.rm = T)),
+        main = "duration Gender Analysis (Participant Averages)",
+        cex.main=0.75)
+pander(summary(aov(duration~gender+Error(stim_ID), data = sex_sub_audio))[[1]])
+```
+
+\newpage
+
+## Analysis of the Age/Language Stimuli
+
+### f0 midpoint analysis
+
+```{r}
+par(mfrow = c(1,2),mar=c(10,4,1,1))
+boxplot(f0~age_group*language,data = age_lang_sub_audio,
+        main="f0 Gender Anlysis (Raw Data)",
+        ylim = c(min(age_lang_sub_audio$f0,na.rm = T),
+                 max(age_lang_sub_audio$f0,na.rm = T)),
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+boxplot(f0~age_group*language,
+        data = aggregate(f0~age_group*language*stim_ID,data = age_lang_sub_audio,mean),
+        ylim = c(min(age_lang_sub_audio$f0,na.rm = T),
+                 max(age_lang_sub_audio$f0,na.rm = T)),
+        main = "f0 Gender Analysis (Participant Averages)",
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+pander(summary(aov(f0~age_group*language+Error(stim_ID), data = age_lang_sub_audio))[[1]])
+```
+
+\newpage
+
+### f1 midpoint analysis
+
+```{r}
+
+par(mfrow = c(1,2),mar=c(10,4,1,1))
+boxplot(f1~age_group*language,data = age_lang_sub_audio,
+        main="f1 Gender Anlysis (Raw Data)",
+        ylim = c(min(age_lang_sub_audio$f1,na.rm = T),
+                 max(age_lang_sub_audio$f1,na.rm = T)),
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+boxplot(f1~age_group*language,
+        data = aggregate(f1~age_group*language*stim_ID,data = age_lang_sub_audio,mean),
+        ylim = c(min(age_lang_sub_audio$f1,na.rm = T),
+                 max(age_lang_sub_audio$f1,na.rm = T)),
+        main = "f1 Gender Analysis (Participant Averages)",
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+pander(summary(aov(f1~age_group*language+Error(stim_ID), data = age_lang_sub_audio))[[1]])
+```
+
+\newpage
+
+### f2 midpoint analysis
+
+```{r}
+par(mfrow = c(1,2),mar=c(10,4,1,1))
+boxplot(f2~age_group*language,data = age_lang_sub_audio,
+        main="f2 Gender Anlysis (Raw Data)",
+        ylim = c(min(age_lang_sub_audio$f2,na.rm = T),
+                 max(age_lang_sub_audio$f2,na.rm = T)),
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+boxplot(f2~age_group*language,
+        data = aggregate(f2~age_group*language*stim_ID,data = age_lang_sub_audio,mean),
+        ylim = c(min(age_lang_sub_audio$f2,na.rm = T),
+                 max(age_lang_sub_audio$f2,na.rm = T)),
+        main = "f2 Gender Analysis (Participant Averages)",
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+pander(summary(aov(f2~age_group*language+Error(stim_ID), data = age_lang_sub_audio))[[1]])
+```
+
+\newpage
+
+### intensity analysis
+
+```{r}
+par(mfrow = c(1,2),mar=c(10,4,1,1))
+boxplot(intens~age_group*language,data = age_lang_sub_audio,
+        main="intensity Gender Anlysis (Raw Data)",
+        ylim = c(min(age_lang_sub_audio$intens,na.rm = T),
+                 max(age_lang_sub_audio$intens,na.rm = T)),
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+boxplot(intens~age_group*language,
+        data = aggregate(intens~age_group*language*stim_ID,data = age_lang_sub_audio,mean),
+        ylim = c(min(age_lang_sub_audio$intens,na.rm = T),
+                 max(age_lang_sub_audio$intens,na.rm = T)),
+        main = "intensity Gender Analysis (Participant Averages)",
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+pander(summary(aov(intens~age_group*language+Error(stim_ID), data = age_lang_sub_audio))[[1]])
+```
+
+\newpage
+
+### duration midpoint analysis
+
+```{r}
+par(mfrow = c(1,2),mar=c(10,4,1,1))
+boxplot(duration~age_group*language,
+        data = age_lang_sub_audio,
+        main="duration Gender Anlysis (Raw Data)",
+        ylim = c(min(age_lang_sub_audio$duration,na.rm = T),
+                 max(age_lang_sub_audio$duration,na.rm = T)),
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+boxplot(duration~age_group*language,
+        data = aggregate(duration~age_group*language*stim_ID,data = age_lang_sub_audio,mean),
+        ylim = c(min(age_lang_sub_audio$duration,na.rm = T),
+                 max(age_lang_sub_audio$duration,na.rm = T)),
+        main = "duration Gender Analysis (Participant Averages)",
+        cex.main=0.75,
+        las=2,
+        xlab = "")
+pander(summary(aov(duration~age_group*language+Error(stim_ID), data = age_lang_sub_audio))[[1]])
+```
+
+\newpage
+
+# Multiple Imputation (Sample Observed Values)
+
+## Analysis of the Sex Stimuli
+
+```{r, include=FALSE}
+# Fill in empty data by random sample from observed values
+MI<-mice(data = sex_sub_audio[,c("duration","f0","f1","f2","intens",
+                                 "stim_ID","age_mo_round","gender",
+                                 "corpus","language","age_group")],
+         method = "sample",maxit = 10) # specifying columns for consistency with age/language stimuli analysis where there were problems with the Filename column
+MI_List<-mids2mitml.list(MI)
+```
+
+### f0 midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(f0~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f0~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### f1 midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(f1~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f1~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### f2 midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(f2~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f2~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### intensity analysis
+
+```{r}
+fit1<-with(MI_List,lmer(intens~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(intens~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### duration midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(duration~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(duration~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+## Analysis of the Age/Langurage Stimuli
+
+```{r, include=FALSE}
+# Fill in empty data by random sample from observed values
+MI<-mice(data = age_lang_sub_audio[,c("duration","f0","f1","f2","intens",
+                                      "stim_ID","age_mo_round","gender",
+                                      "corpus","language","age_group")],
+         method = "sample",maxit = 10) # the Filename column causes the program to stall so specify all the other columns (expect textgrdlabel because it holds no possible interest)
+MI_List<-mids2mitml.list(MI)
+```
+
+### f0 midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(f0~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f0~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(f0~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(f0~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### f1 midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(f1~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f1~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(f1~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(f1~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### f2 midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(f2~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f2~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(f2~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(f2~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### intensity analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(intens~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(intens~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(intens~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(intens~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### duration midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(duration~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(duration~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(duration~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(duration~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+# Multiple Imputation (Predictive Mean Matching)
+
+## Analysis of the Sex Stimuli
+
+```{r, include=FALSE}
+# Fill in empty data by predictive mean matching
+MI<-mice(data = sex_sub_audio[,c("duration","f0","f1","f2","intens",
+                                 "stim_ID","age_mo_round","gender",
+                                 "corpus","language","age_group")],
+         method = "pmm",maxit = 10) # specifying columns for consistency with age/language stimuli analysis where there were problems with the Filename column
+MI_List<-mids2mitml.list(MI)
+```
+
+### f0 midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(f0~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f0~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### f1 midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(f1~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f1~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### f2 midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(f2~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f2~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### intensity analysis
+
+```{r}
+fit1<-with(MI_List,lmer(intens~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(intens~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+### duration midpoint analysis
+
+```{r}
+fit1<-with(MI_List,lmer(duration~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(duration~1+gender+(1|stim_ID)))
+testModels(fit2,fit1)
+```
+
+\newpage
+
+## Analysis of the Age/Langurage Stimuli
+
+```{r, include=FALSE}
+# Fill in empty data by predictive mean matching
+MI<-mice(data = age_lang_sub_audio[,c("duration","f0","f1","f2","intens",
+                                      "stim_ID","age_mo_round","gender",
+                                      "corpus","language","age_group")],
+         method = "pmm",maxit = 10) # the Filename column causes the program to stall so specify all the other columns (expect textgrdlabel because it holds no possible interest)
+MI_List<-mids2mitml.list(MI)
+```
+
+### f0 midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(f0~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f0~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(f0~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(f0~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### f1 midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(f1~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f1~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(f1~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(f1~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### f2 midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(f2~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(f2~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(f2~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(f2~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### intensity analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(intens~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(intens~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(intens~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(intens~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
+
+\newpage
+
+### duration midpoint analysis
+
+```{r, message=FALSE}
+fit1<-with(MI_List,lmer(duration~1+(1|stim_ID)))
+fit2<-with(MI_List,lmer(duration~1+age_group+(1|stim_ID)))
+fit3<-with(MI_List,lmer(duration~1+age_group+language+(1|stim_ID)))
+fit4<-with(MI_List,lmer(duration~1+age_group*language+(1|stim_ID)))
+testModels(fit2,fit1)
+testModels(fit3,fit2)
+testModels(fit4,fit3)
+```
