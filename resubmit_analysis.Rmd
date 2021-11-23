@@ -1,5 +1,5 @@
 ---
-title: "Resubmit_Analysis"
+title: "Acoustic Analysis"
 output: pdf_document
 
 ---
@@ -106,7 +106,7 @@ audio_data$intens<-as.numeric(audio_data$intens)
 audio_data$duration<-as.numeric(audio_data$duration)
 audio_data$age_mo_round<-as.numeric(audio_data$age_mo_round)
 
-audio_data$Filename<-as.factor(audio_data$Filename)
+#audio_data$Filename<-as.factor(audio_data$Filename)
 audio_data$stim_ID<-as.factor(audio_data$stim_ID)
 audio_data$gender<-as.factor(audio_data$gender)
 audio_data$corpus<-as.factor(audio_data$corpus)
