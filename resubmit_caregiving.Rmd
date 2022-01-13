@@ -125,7 +125,7 @@ d <- d[d$know_corp_lang == "list()", ]
 library(lme4)
 # tested every level of the categorical split and found no significance (alpha = 0.01). Lowest p = 0.03
 save<-rep(0,3*100)
-for(i in 1:100){
+for(i in 0:99){
   X<-i
   # define any experience as more than X
   d$anyExp<-(d$childcare>X | d$caregiver>X)
@@ -136,14 +136,14 @@ for(i in 1:100){
                      family = binomial(link=logit))
   sum<-summary(model_AnyExp)
   #sum
-  save[((i-1)*3)+1]<-sum$coefficients[2,4]
+  save[((i)*3)+1]<-sum$coefficients[2,4]
   # language any experience categorical model instead of continuous variable
   model_AnyExp<- glmer(correct~1+anyExp+(1|subject_ID),
                      data = subset(d,
                                    d$gender%in%c("Male","Female") & d$phase=="Language"),
                      family = binomial(link=logit))
   sum<-summary(model_AnyExp)
-  save[((i-1)*3)+2]<-sum$coefficients[2,4]
+  save[((i)*3)+2]<-sum$coefficients[2,4]
   #sum
   # age any experience categorical model instead of continuous variable
   model_AnyExp<- glmer(correct~1+anyExp+(1|subject_ID),
@@ -151,11 +151,11 @@ for(i in 1:100){
                                    d$gender%in%c("Male","Female") & d$phase=="Age"),
                      family = binomial(link=logit))
   sum<-summary(model_AnyExp)
-  save[((i-1)*3)+3]<-sum$coefficients[2,4]
+  save[((i)*3)+3]<-sum$coefficients[2,4]
   #print(sum)
 }
 res<-matrix(save,ncol = 3,byrow = T)
-res<-cbind(c(1:100),res)
+res<-cbind(c(0:99),res)
 colnames(res)<-c("Split at", "Sex","Language","Age")
 library(knitr)
 kable(res, caption = "P-values of the 'any experience' variable for each level of categorical split")
